@@ -2,7 +2,8 @@
   "dependencies": {
     "ejs": "^3.1.6",
     "env": "^0.0.2",
-    "express": "^4.17.2"
+    "express": "^4.17.2",
+    "mysql2": "^2.3.3"
   },
   "name": "3term-mini-back",
   "description": "모던 애자일 3기 미니 프로젝트 저장소입니다.",
@@ -10,6 +11,7 @@
   "main": "index.js",
   "devDependencies": {},
   "scripts": {
+    "start": "nodemon ./app/bin/www.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
