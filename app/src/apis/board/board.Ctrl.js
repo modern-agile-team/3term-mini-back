@@ -2,7 +2,7 @@
 
 const process = {
   all: (req, res) => {
-    res.send("test");
+    return res.send("test");
   },
 };
 
