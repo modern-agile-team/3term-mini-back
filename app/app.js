@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // API 경로 지정
 const profile = require("./src/apis/profile");
-const board = require("./src/apis/Board/BoardCtrl/index");
+const board = require("./src/models/services/Board/BoardCtrl");
 
 // API 연결
 app.use("/api/profile", profile);
