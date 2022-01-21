@@ -1,6 +1,6 @@
 "use strict";
 
-const mysql = require("../config/mysql");
+const mysql = require("../../../config/mysql");
 
 class ProfileStorage {
   static async findProfile(userNo) {
