@@ -10,7 +10,6 @@ class profile {
   async searchProfile() {
     try {
       const infoProfile = await ProfileStorage.findProfile();
-
       return infoProfile;
     } catch (err) {
       return { success: false, err };

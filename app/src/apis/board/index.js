@@ -1,7 +1,7 @@
 "use strict";
 
 const express = require("express");
-const boardCtrl = require("./board.ctrl");
+const boardCtrl = require("./board.Ctrl");
 
 const router = express.Router();
 
