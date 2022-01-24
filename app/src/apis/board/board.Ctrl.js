@@ -20,6 +20,30 @@ const process = {
     const response = await board.deleteBoard(req);
     return res.status(204).json(response);
   },
+
+  // 1팀
+  create: async (req, res) => {
+    const board = new Boards(req);
+    const createBoard = await board.boardCreate(req);
+
+    if (createBoard.success) {
+      return res.status(201).json(createBoard);
+    } else {
+      return res.status(500).json(createBoard);
+    }
+  },
+
+  update: async (req, res) => {
+    const board = new Boards(req);
+    const updateBoard = await board.boardUpdate(req);
+    return res.json(updateBoard[0]);
+  },
+
+  findByBeforBoardInfo: async (req, res) => {
+    const board = new Boards(req);
+    const findByBeforBoardInfo = await board.boardByBeforUpdate(req);
+    return res.json(findByBeforBoardInfo[0]);
+  },
 };
 
 module.exports = { process };

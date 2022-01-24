@@ -7,6 +7,7 @@ class BoardStorage {
     const query = `SELECT * FROM boards;`;
     return await mysql.query(query);
   }
+
   static async findOneByBoardNo(no) {
     try {
       const query = `SELECT * FROM boards WHERE no = ?;`;
@@ -15,6 +16,7 @@ class BoardStorage {
       return { success: false, msg: err };
     }
   }
+
   static async deleteBoard(no) {
     try {
       const query = `DELETE FROM boards WHERE no=? ;`;
@@ -22,6 +24,43 @@ class BoardStorage {
     } catch (err) {
       return { success: false, msg: err };
     }
+  }
+
+  //1팀-------------------------------------------------------
+  static async createBoard(boardInfo) {
+    const { user_no, title, description } = boardInfo;
+    try {
+      const query = `INSERT INTO boards(user_no, title, description) VALUES(?, ?, ?);`;
+      const create = await mysql.query(query, [user_no, title, description]);
+      if (create[0].affectedRows) {
+        return { success: true };
+      } else {
+        return { success: false };
+      }
+    } catch (err) {
+      throw { err: "서버에러입니다, 서버 개발자에게 문의해주세요" };
+    }
+  }
+
+  static async findByThisBoardInfo(userNo) {
+    const query = `SELECT * FROM boards WHERE no = ? AND user_no = ?;`;
+    const findBoardInfo = await mysql.query(query, [
+      userNo.boardNo,
+      userNo.userNo,
+    ]);
+    return findBoardInfo;
+  }
+
+  static async updateBoard(userInfo, boardInfo) {
+    const query = `UPDATE boards SET title = ?, description = ?  WHERE no = ? AND user_no = ?;`;
+    const update = await mysql.query(query, [
+      boardInfo.title,
+      boardInfo.description,
+      userInfo.boardNo,
+      userInfo.userNo,
+    ]);
+
+    return update;
   }
 }
 
