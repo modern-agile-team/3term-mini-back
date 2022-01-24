@@ -1,33 +1,44 @@
 "use strict";
 
-const ProfileStorage = require("./ProfileStorage");
+const ReportStorage = require("./ReportStorage");
 
-class profile {
+class report {
   constructor(req) {
-    this.params = req;
-    this.body = req;
+    this.params = req.params;
+    this.body = req.body;
   }
 
-  async searchProfile(userByProfile) {
-    const reportCheckbox = {
-      1: "욕설및비방",
-      2: "개인정보요구",
-      3: "사기",
-      4: "사적인연락",
-      5: "도배",
-      6: "선정적인게시물",
-      7: "폭력적위협",
-    };
+  async reportBoard() {
     try {
-      const infoProfile = await ProfileStorage.findOneByProfile(userByProfile);
-      if (infoProfile.success) {
+      const reportDetail = this.body;
+      const reportBoardResult = await ReportStorage.addBoardReport(
+        reportDetail
+      );
+
+      if (reportBoardResult.success) {
         return {
           success: true,
-          profile: infoProfile.infoProfile,
-          msg: "프로필 불러오기에 성공했습니다.",
+          msg: "게시글 신고가 접수되었습니다..",
         };
       } else {
-        return { success: false, msg: "해당 유저의 정보가 없습니다." };
+        return { success: false, msg: "게시글 신고 접수에 실패했습니다." };
+      }
+    } catch (err) {
+      return { success: false, msg: err };
+    }
+  }
+  async reportUser() {
+    try {
+      const reportDetail = this.body;
+      const reportUserResult = await ReportStorage.addUserReport(reportDetail);
+
+      if (reportUserResult.success) {
+        return {
+          success: true,
+          msg: "이용자 신고가 접수되었습니다.",
+        };
+      } else {
+        return { success: false, msg: "이용자 신고 접수에 실패했습니다." };
       }
     } catch (err) {
       return { success: false, msg: err };
@@ -35,4 +46,4 @@ class profile {
   }
 }
 
-module.exports = profile;
+module.exports = report;
