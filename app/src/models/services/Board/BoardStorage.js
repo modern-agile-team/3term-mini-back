@@ -9,23 +9,29 @@ class BoardStorage {
 
   //1팀-------------------------------------------------------
   static async createBoard(boardInfo) {
-    const query = `INSERT INTO boards(user_no, title, description) VALUES(?, ?, ?);`;
-    const create = await mysql.query(query, [
-      boardInfo.userNo,
-      boardInfo.title,
-      boardInfo.description,
-    ]);
-
-    return create;
+    console.log(boardInfo);
+    try {
+      const query = `INSERT INTO boards(user_no, title, description) VALUES(?, ?, ?);`;
+      const create = await mysql.query(query, [
+        boardInfo.user_no,
+        boardInfo.title,
+        boardInfo.description,
+      ]);
+      if (create[0].affectedRows) {
+        return { success: true };
+      }
+    } catch (err) {
+      throw { err: "Server Error", code: err.code };
+    }
   }
 
-  static async updateBoardView(userNo) {
+  static async findByThisBoardInfo(userNo) {
     const query = `SELECT * FROM boards WHERE no = ? AND user_no = ?;`;
-    const updateView = await mysql.query(query, [
+    const findBoardInfo = await mysql.query(query, [
       userNo.boardNo,
       userNo.userNo,
     ]);
-    return updateView;
+    return findBoardInfo;
   }
 
   static async updateBoard(userInfo, boardInfo) {

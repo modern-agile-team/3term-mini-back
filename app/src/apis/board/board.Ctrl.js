@@ -13,7 +13,7 @@ const process = {
   create: async (req, res) => {
     const board = new Boards(req);
     const createBoard = await board.boardCreate(req);
-    return res.json(createBoard[0]);
+    return res.json(createBoard);
   },
 
   update: async (req, res) => {
@@ -22,10 +22,10 @@ const process = {
     return res.json(updateBoard[0]);
   },
 
-  updateView: async (req, res) => {
+  findByBeforBoardInfo: async (req, res) => {
     const board = new Boards(req);
-    const updateViewBoard = await board.updateBoardView(req);
-    return res.json(updateViewBoard[0]);
+    const findByBeforBoardInfo = await board.boardByBeforUpdate(req);
+    return res.json(findByBeforBoardInfo[0]);
   },
 };
 

@@ -26,9 +26,9 @@ class Board {
     return response;
   }
 
-  async updateBoardView() {
+  async boardByBeforUpdate() {
     const userNo = this.params;
-    return await BoardStorage.updateBoardView(userNo);
+    return await BoardStorage.findByThisBoardInfo(userNo);
   }
 }
 
