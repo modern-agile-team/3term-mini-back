@@ -8,9 +8,9 @@ class profile {
     this.body = req;
   }
 
-  async searchProfile(profileOfUserNo) {
+  async searchProfile(userByProfile) {
     try {
-      const infoProfile = await ProfileStorage.findProfile(profileOfUserNo);
+      const infoProfile = await ProfileStorage.findOneByProfile(userByProfile);
       if (infoProfile.success) {
         return {
           success: true,
@@ -21,7 +21,7 @@ class profile {
         return { success: false, msg: "해당 유저의 정보가 없습니다." };
       }
     } catch (err) {
-      return { success: false, err };
+      return { success: false, msg: err };
     }
   }
 }
