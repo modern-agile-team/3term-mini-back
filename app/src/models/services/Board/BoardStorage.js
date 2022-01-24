@@ -9,16 +9,14 @@ class BoardStorage {
 
   //1팀-------------------------------------------------------
   static async createBoard(boardInfo) {
-    console.log(boardInfo);
+    const { user_no, title, description } = boardInfo;
     try {
       const query = `INSERT INTO boards(user_no, title, description) VALUES(?, ?, ?);`;
-      const create = await mysql.query(query, [
-        boardInfo.user_no,
-        boardInfo.title,
-        boardInfo.description,
-      ]);
+      const create = await mysql.query(query, [user_no, title, description]);
       if (create[0].affectedRows) {
         return { success: true };
+      } else {
+        return { success: false };
       }
     } catch (err) {
       throw { err: "Server Error", code: err.code };

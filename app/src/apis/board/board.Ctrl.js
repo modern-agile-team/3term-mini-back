@@ -13,7 +13,12 @@ const process = {
   create: async (req, res) => {
     const board = new Boards(req);
     const createBoard = await board.boardCreate(req);
-    return res.json(createBoard);
+
+    if (createBoard.success) {
+      return res.status(201).json(createBoard);
+    } else {
+      return res.status(500).json(createBoard);
+    }
   },
 
   update: async (req, res) => {
