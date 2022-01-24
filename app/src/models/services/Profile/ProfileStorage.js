@@ -3,12 +3,21 @@
 const mysql = require("../../../config/mysql");
 
 class ProfileStorage {
-  static async findProfile() {
+  static async findProfile(profileOfUserNo) {
     try {
-      const query = `SELECT * FROM boards`;
-      const infoProfile = await mysql.query(query);
-      console.log(infoProfile[0]);
-      return infoProfile[0];
+      //닉네임 이메일 게시물 사용자이름
+      const query = `SELECT users.name, users.nickname, users.mail,COUNT(boards.no) AS boards 
+          FROM users 
+          LEFT JOIN boards 
+          ON users.no = boards.user_no 
+          WHERE users.no=?`;
+      const infoProfile = await mysql.query(query, [profileOfUserNo]);
+
+      if (infoProfile[0].length) {
+        return { success: true, infoProfile: infoProfile[0] };
+      } else {
+        return { success: false };
+      }
     } catch (err) {
       throw { err: "Server Error", code: err.code };
     }
