@@ -7,16 +7,57 @@ class Board {
     this.params = req.params;
     this.body = req.body;
   }
-
+  //2팀
   async boardAll() {
     return await BoardStorage.findAllByBoards();
   }
 
+  async deleteBoard(req) {
+    const no = req.params.no;
+    try {
+      const response = await BoardStorage.deleteBoard(no);
+      return response;
+    } catch (err) {
+      return { success: false, msg: err };
+    }
+  }
+
+  async findOneByBoard(req) {
+    const no = req.params.no;
+    try {
+      const response = await BoardStorage.findOneByBoardNo(no);
+      return response[0][0];
+    } catch (err) {
+      return { success: false, msg: err };
+    }
+  }
+
   //1팀
   async boardCreate() {
-    const boardWrite = this.body;
-    const response = await BoardStorage.createBoard(boardWrite);
-    return response;
+    try {
+      const boardWrite = this.body;
+      if (
+        boardWrite.title.length === 0 ||
+        boardWrite.description.length === 0
+      ) {
+        return {
+          success: false,
+          msg: "제목 또는 내용을 입력해주세요",
+        };
+      }
+      const response = await BoardStorage.createBoard(boardWrite);
+
+      if (response.success) {
+        return {
+          success: true,
+          msg: "게시물 등록이 완료되었습니다.",
+        };
+      } else {
+        return { success: false, msg: "게시물 등록이 실패하였습니다." };
+      }
+    } catch (err) {
+      return { success: false, msg: err };
+    }
   }
 
   async boardUpdate() {
