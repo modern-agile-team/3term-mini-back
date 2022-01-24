@@ -1,15 +1,20 @@
 "use strict";
 
 const express = require("express");
-const app = express();
 const dotenv = require("dotenv");
 
+const app = express();
 dotenv.config();
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const router = require("./src/routes");
+// API 경로 지정
+const profile = require("./src/apis/profile");
+const board = require("./src/apis/board");
 
-app.use("/", router);
+// API 연결
+app.use("/api/profile", profile);
+app.use("/api/board", board);
 
 module.exports = app;
