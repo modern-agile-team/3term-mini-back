@@ -10,7 +10,6 @@
   "description": "모던 애자일 3기 미니 프로젝트 저장소입니다.",
   "version": "1.0.0",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
     "start": "nodemon ./app/bin/www.js",
     "test": "echo \"Error: no test specified\" && exit 1"
