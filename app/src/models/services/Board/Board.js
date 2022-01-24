@@ -11,16 +11,16 @@ class Board {
   async boardAll() {
     return await BoardStorage.findAllByBoards();
   }
-  async selectDetail(req) {
+  async findOneByBoard(req) {
     const no = req.params.no;
     try {
-      const response = await BoardStorage.findOneByBoardNum(no);
+      const response = await BoardStorage.findOneByBoardNo(no);
       return response[0][0];
     } catch (err) {
       return { success: false, msg: err };
     }
   }
-  async deleteTable(req) {
+  async deleteBoard(req) {
     const no = req.params.no;
     try {
       const response = await BoardStorage.deleteBoard(no);

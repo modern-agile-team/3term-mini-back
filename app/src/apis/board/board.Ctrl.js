@@ -10,14 +10,14 @@ const process = {
     const boards = await board.boardAll(req);
     return res.status(200).json(boards[0]);
   },
-  selectDetail: async (req, res) => {
+  findOneByBoard: async (req, res) => {
     const board = new Boards(req);
-    const response = await board.selectDetail(req);
+    const response = await board.findOneByBoard(req);
     return res.status(200).json(response);
   },
   delete: async (req, res) => {
     const board = new Board(req);
-    const response = await board.deleteTable(req);
+    const response = await board.deleteBoard(req);
     return res.status(204).json(response);
   },
 };

@@ -7,7 +7,7 @@ class BoardStorage {
     const query = `SELECT * FROM boards;`;
     return await mysql.query(query);
   }
-  static async findOneByBoardNum(no) {
+  static async findOneByBoardNo(no) {
     try {
       const query = `SELECT * FROM boards WHERE no = ?;`;
       return await mysql.query(query, [no]);
