@@ -11,6 +11,25 @@ class Board {
   async boardAll() {
     return await BoardStorage.findAllByBoards();
   }
+
+  //1팀
+  async boardCreate() {
+    const boardWrite = this.body;
+    const response = await BoardStorage.createBoard(boardWrite);
+    return response;
+  }
+
+  async boardUpdate() {
+    const boardWrite = this.body;
+    const userNo = this.params;
+    const response = await BoardStorage.updateBoard(userNo, boardWrite);
+    return response;
+  }
+
+  async updateBoardView() {
+    const userNo = this.params;
+    return await BoardStorage.updateBoardView(userNo);
+  }
 }
 
 module.exports = Board;
