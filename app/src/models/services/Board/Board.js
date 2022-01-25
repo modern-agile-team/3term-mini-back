@@ -68,8 +68,13 @@ class Board {
   }
 
   async boardByBeforUpdate() {
-    const userNo = this.params;
-    return await BoardStorage.findByThisBoardInfo(userNo);
+    try {
+      const userNo = this.params;
+      const findBoard = await BoardStorage.findByThisBoardInfo(userNo);
+      return { success: true, boardInfo: findBoard.boardInfo[0] };
+    } catch (err) {
+      return { success: false, msg: err };
+    }
   }
 }
 
