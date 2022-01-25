@@ -36,7 +36,11 @@ const process = {
   update: async (req, res) => {
     const board = new Boards(req);
     const updateBoard = await board.boardUpdate(req);
-    return res.json(updateBoard[0]);
+    if (updateBoard.success) {
+      return res.status(200).json(updateBoard);
+    } else {
+      return res.status(500).json(updateBoard);
+    }
   },
 
   findByBeforBoardInfo: async (req, res) => {
