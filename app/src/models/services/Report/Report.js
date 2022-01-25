@@ -27,7 +27,7 @@ class report {
       desc: reportDetail.description,
       reportId: reportDetail.reportId,
     };
-    console.log(reportError.desc.length, reportError.reportId.length);
+
     // 게시글 신고창에서 체크박스 또는 신고 사유를 입력하지 않을 경우 발생하는 에러
     if (!reportError.desc.length || reportError.reportId.length) {
       const nullKeys = Object.keys(reportError)
