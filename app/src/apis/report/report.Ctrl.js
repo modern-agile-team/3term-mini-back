@@ -2,6 +2,19 @@
 
 const Report = require("../../models/services/Report/Report");
 
+const lookUp = {
+  lookUpReportPage: async (req, res) => {
+    const report = new Report(req);
+    const response = await report.getReportCategory(req);
+
+    if (response.success) {
+      return res.status(200).json(response);
+    } else {
+      return res.status(500).json(response);
+    }
+  },
+};
+
 const process = {
   boardReport: async (req, res) => {
     const report = new Report(req);
@@ -28,4 +41,5 @@ const process = {
 
 module.exports = {
   process,
+  lookUp,
 };
