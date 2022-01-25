@@ -33,6 +33,20 @@ class Board {
   }
 
   //1팀
+  async boardConnect() {
+    const boardNo = this.params;
+    try {
+      const board = await BoardStorage.connectBoard(boardNo);
+      if (board.success) {
+        return { success: board.success, board: board.data };
+      } else {
+        return { success: board.success, msg: "값을 찾을 수 없습니다." };
+      }
+    } catch (err) {
+      return { err };
+    }
+  }
+
   async boardCreate() {
     try {
       const boardWrite = this.body;
