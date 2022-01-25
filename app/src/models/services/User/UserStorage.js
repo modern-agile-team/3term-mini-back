@@ -9,7 +9,6 @@ class UserStorage {
 
     return existId[0];
     //existID가 메타 데이터이기 때문에 existId[0]을 return 해줌으로써 User에 넘겨 줄 데이터는 client.id에 해당하는 열을 객체로 보낸 형태가 됨
-    return { id: existId[0][0].id, password: existId[0][0].password };
   }
 
   static async save(userInfo) {
