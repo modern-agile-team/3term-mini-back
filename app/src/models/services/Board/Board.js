@@ -24,6 +24,7 @@ class Board {
 
   async findOneByBoard(req) {
     const no = req.params.no;
+
     try {
       const response = await BoardStorage.findOneByBoardNo(no);
       return response[0][0];
