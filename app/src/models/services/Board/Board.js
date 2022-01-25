@@ -47,6 +47,23 @@ class Board {
     }
   }
 
+  async userBoardConnect() {
+    const boardInfo = this.params;
+    try {
+      const board = await BoardStorage.userConnectBoard(boardInfo);
+      if (board.boardInfo[0].user_no === Number(boardInfo.userNo)) {
+        return { success: true, data: board };
+      } else {
+        return {
+          success: false,
+          msg: "자신이 직접 작성한 게시물이 아니거나 로그인이 되어있지 않습니다.",
+        };
+      }
+    } catch (err) {
+      return { success: false, err };
+    }
+  }
+
   async boardCreate() {
     try {
       const boardWrite = this.body;
@@ -102,7 +119,14 @@ class Board {
     try {
       const userNo = this.params;
       const findBoard = await BoardStorage.findByThisBoardInfo(userNo);
-      return { success: true, boardInfo: findBoard.boardInfo[0] };
+      if (findBoard.success) {
+        return {
+          success: findBoard.success,
+          boardInfo: findBoard.boardInfo[0],
+        };
+      } else {
+        return { success: findBoard.success, msg: "값이 들어있지 않습니다" };
+      }
     } catch (err) {
       return { success: false, msg: err };
     }

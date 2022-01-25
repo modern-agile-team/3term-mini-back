@@ -43,7 +43,28 @@ class BoardStorage {
         return { success: false };
       }
     } catch (err) {
-      throw { msg: "게시판 접속 에러입니다, 서버 개발자에게 문의해주세요" };
+      throw { msg: "게시판 접속 에러입니다, 서버 개발자에게 문의해주세요." };
+    }
+  }
+
+  static async userConnectBoard(boardNum) {
+    try {
+      const query = `SELECT boards.user_no, boards.title, boards.description AS boardDesc, boards.in_date AS boardInDate, replies.description AS replyDesc, replies.in_date AS replyInDate, users.nickname 
+    FROM boards
+    RIGHT JOIN replies 
+    on boards.no = replies.board_no
+    JOIN users
+    on replies.user_no = users.no WHERE boards.no = ?`;
+      const connect = await mysql.query(query, [boardNum.boardNo]);
+      if (connect[0].length) {
+        return { boardInfo: connect[0] };
+      } else {
+        return { success: false };
+      }
+    } catch (err) {
+      throw {
+        msg: "회원 게시판 접속 에러입니다, 서버 개발자에게 문의해주세요.",
+      };
     }
   }
 
@@ -58,7 +79,7 @@ class BoardStorage {
         return { success: false };
       }
     } catch (err) {
-      throw { err: "게시판 생성 에러입니다, 서버 개발자에게 문의해주세요" };
+      throw { err: "게시판 생성 에러입니다, 서버 개발자에게 문의해주세요." };
     }
   }
 
@@ -67,10 +88,14 @@ class BoardStorage {
     try {
       const query = `SELECT title, description FROM boards WHERE no = ? AND user_no = ?;`;
       const findBoardInfo = await mysql.query(query, [boardNo, userNo]);
-      return { success: true, boardInfo: findBoardInfo[0] };
+      if (findBoardInfo.length) {
+        return { success: true, boardInfo: findBoardInfo[0] };
+      } else {
+        return { success: false };
+      }
     } catch (err) {
       throw {
-        err: "게시글 수정 화면 에러입니다, 서버 개발자에게 문의해주세요",
+        err: "게시글 수정 화면 에러입니다, 서버 개발자에게 문의해주세요.",
       };
     }
   }
@@ -92,7 +117,7 @@ class BoardStorage {
         return { success: false };
       }
     } catch (err) {
-      throw { err: "게시글 수정 에러입니다, 서버 개발자에게 문의해주세요" };
+      throw { err: "게시글 수정 에러입니다, 서버 개발자에게 문의해주세요." };
     }
   }
 }
