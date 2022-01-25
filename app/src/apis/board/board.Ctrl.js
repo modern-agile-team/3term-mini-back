@@ -2,6 +2,7 @@
 
 const Board = require("../../models/services/Board/Board");
 const Boards = require("../../models/services/Board/Board");
+const { connectBoard } = require("../../models/services/Board/BoardStorage");
 
 const process = {
   //2팀
@@ -22,6 +23,21 @@ const process = {
   },
 
   // 1팀
+  connect: async (req, res) => {
+    const board = new Boards(req);
+    try {
+      const connectBoard = await board.boardConnect(req);
+
+      if (connectBoard.success) {
+        return res.status(201).json(connectBoard);
+      } else {
+        return res.status(500).json(connectBoard);
+      }
+    } catch (err) {
+      throw res.status(500).json(err);
+    }
+  },
+
   create: async (req, res) => {
     const board = new Boards(req);
     const createBoard = await board.boardCreate(req);
