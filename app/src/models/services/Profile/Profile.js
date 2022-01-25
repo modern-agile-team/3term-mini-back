@@ -8,8 +8,9 @@ class profile {
     this.body = req;
   }
 
-  async searchProfile(userByProfile) {
+  async searchProfile() {
     try {
+      const userByProfile = this.params;
       const infoProfile = await ProfileStorage.findOneByProfile(userByProfile);
       if (infoProfile.success) {
         return {
