@@ -8,16 +8,18 @@ class User {
   async login() {
     const client = this.body;
     try {
-      const { id, psword } = await UserStorage.getUserInfo(client.id);
-
-      if (id) {
-        if (id === client.id && psword === client.psword) {
+      // const { id, password } = await UserStorage.getUserInfo(client.id);
+      const userInfo = await UserStorage.getUserInfo(client.id);
+      //
+      if (userInfo.length) {
+        if (userInfo.password === client.password) {
           return { success: true };
         }
         return { success: false, msg: "비밀번호가 틀렸습니다" };
       }
       return { success: false, msg: "존재하지 않는 아이디입니다." };
     } catch (err) {
+      console.log(err);
       return { success: false, msg: err };
     }
   }
@@ -48,7 +50,7 @@ class User {
     if (!client.nickname) {
       client.nickname = client.id;
     }
-    //id,mail 중복 시 다른 id,mail로 입력 할 수 있도록.
+    //id 중복 시 다른 id로 입력 할 수 있도록.
     try {
       const id = await UserStorage.getUserInfo(client.id);
 
