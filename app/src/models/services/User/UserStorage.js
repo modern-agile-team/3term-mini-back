@@ -1,26 +1,29 @@
 "use strict";
 
-const db = require("../config/mysql");
+const db = require("../../../config/mysql");
 
 class UserStorage {
-  static getUserInfo(id) {
-    return new Promise((resolve, reject) => {
-      const query = "SELECT * FROM users WHERE id = ?;";
-      db.query(query, [id], (err, data) => {
-        if (err) reject(`${err}`);
-        resolve(data[0]);
-      });
-    });
+  static async getUserInfo(id) {
+    const query = "SELECT * FROM users WHERE id = ?;";
+    const existId = await db.query(query, [id]);
+
+    return existId[0];
   }
 
   static async save(userInfo) {
-    return new Promise((resolve, reject) => {
-      const query = "INSERT INTO users(id,name,psword) VALUES(?,?,?);";
-      db.query(query, [userInfo.id, userInfo.name, userInfo.psword], (err) => {
-        if (err) reject(`${err}`);
-        resolve({ success: true });
-      });
-    });
+    const query = `
+      INSERT INTO users(id, password, mail, nickname, name) 
+      VALUES(?, ?, ?, ?, ?);`;
+    const isSave = await db.query(query, [
+      userInfo.id,
+      userInfo.psword,
+      userInfo.email,
+      userInfo.nickname,
+      userInfo.name,
+    ]);
+    return;
   }
 }
 module.exports = UserStorage;
+
+const subro = 123;
