@@ -7,6 +7,19 @@ class report {
     this.params = req.params;
     this.body = req.body;
   }
+  async getReportCategory() {
+    try {
+      const reportCategory = await ReportStorage.findReportCategory();
+
+      if (reportCategory.success) {
+        return { success: true, category: reportCategory.category };
+      } else {
+        return { success: false, msg: "카테고리 정보 조회에 실패했습니다." };
+      }
+    } catch (err) {
+      return { success: false, msg: err };
+    }
+  }
 
   async reportBoard() {
     try {
