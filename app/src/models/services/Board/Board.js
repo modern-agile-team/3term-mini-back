@@ -61,15 +61,37 @@ class Board {
   }
 
   async boardUpdate() {
-    const boardWrite = this.body;
-    const userNo = this.params;
-    const response = await BoardStorage.updateBoard(userNo, boardWrite);
-    return response;
+    try {
+      const boardWrite = this.body;
+      if (
+        boardWrite.title.length === 0 ||
+        boardWrite.description.length === 0
+      ) {
+        return {
+          success: false,
+          msg: "제목 또는 내용을 입력해주세요",
+        };
+      }
+      const userNo = this.params;
+      const response = await BoardStorage.updateBoard(userNo, boardWrite);
+      if (response.success) {
+        return { success: response.success, msg: "수정이 완료되었습니다." };
+      } else {
+        return { success: response.success, msg: "수정이 되지 않았습니다." };
+      }
+    } catch (err) {
+      return { success: false, msg: err };
+    }
   }
 
   async boardByBeforUpdate() {
-    const userNo = this.params;
-    return await BoardStorage.findByThisBoardInfo(userNo);
+    try {
+      const userNo = this.params;
+      const findBoard = await BoardStorage.findByThisBoardInfo(userNo);
+      return { success: true, boardInfo: findBoard.boardInfo[0] };
+    } catch (err) {
+      return { success: false, msg: err };
+    }
   }
 }
 
