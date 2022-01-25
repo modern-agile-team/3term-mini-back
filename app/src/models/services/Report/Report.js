@@ -43,6 +43,7 @@ class report {
   async reportUser() {
     try {
       const reportDetail = this.body;
+      console.log(reportDetail);
       const reportUserResult = await ReportStorage.addUserReport(reportDetail);
 
       if (reportUserResult.success) {
