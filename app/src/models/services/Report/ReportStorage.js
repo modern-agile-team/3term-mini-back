@@ -52,12 +52,12 @@ class ReportStorage {
       const query = `INSERT INTO report_users(reported_user_no, report_user_no, description, first_check, second_check, third_check) 
                     VALUES(?, ?, ?, ?, ?, ?);`;
       const reportSave = await mysql.query(query, [
-        reportUser.reportedUserNo,
-        reportUser.reportUserNo,
-        reportUser.description,
-        reportCheckbox[reportUser.first],
-        reportCheckbox[reportUser.second],
-        reportCheckbox[reportUser.third],
+        reportUser[0].reportedUserNo,
+        reportUser[0].reportUserNo,
+        reportUser[0].description,
+        reportCheckbox[reportUser[1].id],
+        reportCheckbox[reportUser[2].id],
+        reportCheckbox[reportUser[3].id],
       ]);
 
       if (reportSave[0].affectedRows) {

@@ -14,7 +14,7 @@ class profile {
       if (infoProfile.success) {
         return {
           success: true,
-          profile: infoProfile.infoProfile,
+          profile: infoProfile.infoProfile[0],
           msg: "프로필 불러오기에 성공했습니다.",
         };
       } else {
