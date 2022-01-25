@@ -54,15 +54,24 @@ class BoardStorage {
   }
 
   static async updateBoard(userInfo, boardInfo) {
-    const query = `UPDATE boards SET title = ?, description = ?  WHERE no = ? AND user_no = ?;`;
-    const update = await mysql.query(query, [
-      boardInfo.title,
-      boardInfo.description,
-      userInfo.boardNo,
-      userInfo.userNo,
-    ]);
-
-    return update;
+    const { title, description } = boardInfo;
+    const { boardNo, userNo } = userInfo;
+    try {
+      const query = `UPDATE boards SET title = ?, description = ?  WHERE no = ? AND user_no = ?;`;
+      const update = await mysql.query(query, [
+        title,
+        description,
+        boardNo,
+        userNo,
+      ]);
+      if (update[0].affectedRows) {
+        return { success: true };
+      } else {
+        return { success: false };
+      }
+    } catch (err) {
+      throw { err: "서버 개발자에게 문의해주세요" };
+    }
   }
 }
 
