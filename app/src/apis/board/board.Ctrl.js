@@ -25,47 +25,69 @@ const process = {
   // 1팀
   connect: async (req, res) => {
     const board = new Boards(req);
+
     try {
       const connectBoard = await board.boardConnect(req);
 
       if (connectBoard.success) {
         return res.status(201).json(connectBoard);
       } else {
-        return res.status(500).json(connectBoard);
+        return res.status(404).json(connectBoard);
       }
     } catch (err) {
       throw res.status(500).json(err);
     }
   },
 
+  userBoard: async (req, res) => {
+    const board = new Boards(req);
+    const userBoard = await board.userBoardConnect(req);
+    return res.json(userBoard);
+  },
+
   create: async (req, res) => {
     const board = new Boards(req);
-    const createBoard = await board.boardCreate(req);
 
-    if (createBoard.success) {
-      return res.status(201).json(createBoard);
-    } else {
-      return res.status(500).json(createBoard);
+    try {
+      const createBoard = await board.boardCreate(req);
+
+      if (createBoard.success) {
+        return res.status(201).json(createBoard);
+      } else {
+        return res.status(400).json(createBoard);
+      }
+    } catch (err) {
+      throw res.status(500).json(err);
     }
   },
 
   update: async (req, res) => {
     const board = new Boards(req);
-    const updateBoard = await board.boardUpdate(req);
-    if (updateBoard.success) {
-      return res.status(200).json(updateBoard);
-    } else {
-      return res.status(500).json(updateBoard);
+
+    try {
+      const updateBoard = await board.boardUpdate(req);
+      if (updateBoard.success) {
+        return res.status(200).json(updateBoard);
+      } else {
+        return res.status(400).json(updateBoard);
+      }
+    } catch (err) {
+      throw res.status(500).json(err);
     }
   },
 
   findByBeforBoardInfo: async (req, res) => {
     const board = new Boards(req);
-    const findByBeforBoardInfo = await board.boardByBeforUpdate(req);
-    if (findByBeforBoardInfo.success) {
-      return res.status(200).json(findByBeforBoardInfo);
-    } else {
-      return res.status(500).json(findByBeforBoardInfo);
+
+    try {
+      const findByBeforBoardInfo = await board.boardByBeforUpdate(req);
+      if (findByBeforBoardInfo.success) {
+        return res.status(200).json(findByBeforBoardInfo);
+      } else {
+        return res.status(400).json(findByBeforBoardInfo);
+      }
+    } catch (err) {
+      throw res.status(500).json(err);
     }
   },
 };
