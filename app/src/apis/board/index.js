@@ -11,8 +11,20 @@ router.get(`/findOneByBoard/:no`, boardCtrl.process.findOneByBoard);
 router.delete(`/deleteBoard/:no`, boardCtrl.process.delete);
 
 // 1팀
+
+//게시판 접속
+router.get("/connect/:boardNo", boardCtrl.process.connect);
+
+// 수정 전 화면
+router.get(
+  "/updatePage/:boardNo/:userNo",
+  boardCtrl.process.findByBeforBoardInfo
+);
+
+// 생성
 router.post("/create", boardCtrl.process.create);
-router.get("/create/:boardNo/:userNo", boardCtrl.process.findByBeforBoardInfo);
-router.put("/create/:boardNo/:userNo", boardCtrl.process.update);
+
+// 수정
+router.put("/update/:boardNo/:userNo", boardCtrl.process.update);
 
 module.exports = router;
