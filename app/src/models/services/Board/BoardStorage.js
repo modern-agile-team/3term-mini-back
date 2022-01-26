@@ -27,16 +27,33 @@ class BoardStorage {
   }
 
   //1팀-------------------------------------------------------
+  static async findCmtAllByBoardNo(boardNum) {
+    try {
+      const query = `
+      SELECT replies.no AS cmtId, replies.user_no AS replyUserNo, description, DATE_FORMAT(in_date,'%m/%d %H:%i') AS inDate, users.nickname
+      FROM replies 
+      LEFT JOIN users
+      ON replies.user_no = users.no
+      WHERE board_no = ?`;
+      const connect = await mysql.query(query, [boardNum.boardNo]);
+
+      return { success: true, replyInfo: connect.shift() };
+    } catch (err) {
+      throw {
+        msg: "게시판 댓글 조회 에러입니다, 서버 개발자에게 문의해주세요.",
+      };
+    }
+  }
   static async connectBoard(boardNum) {
     try {
       const query = `
-      SELECT boards.title, boards.description AS boardDesc, boards.in_date AS boardInDate, replies.description AS replyDesc, replies.in_date AS replyInDate, users.nickname 
-      FROM boards
-      RIGHT JOIN replies 
-      on boards.no = replies.board_no
-      JOIN users
-      on replies.user_no = users.no WHERE boards.no = ?`;
+      SELECT boards.no, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate, users.nickname
+	    FROM boards
+      LEFT JOIN users
+      ON boards.user_no = users.no
+    	WHERE boards.no = ?`;
       const connect = await mysql.query(query, [boardNum.boardNo]);
+
       if (connect[0].length) {
         return { success: true, data: connect[0] };
       } else {
