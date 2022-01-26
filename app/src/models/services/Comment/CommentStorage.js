@@ -42,6 +42,22 @@ class CommentStorage {
       throw { msg: "댓글 작성 에러입니다, 서버 개발자에게 문의해주세요." };
     }
   }
+
+  static async removeComment(deleteUserNo) {
+    try {
+      const { cmtNo } = deleteUserNo;
+      const query = `DELETE FROM comments WHERE no=?`;
+      const deleteData = await mysql.query(query, [cmtNo]);
+
+      if (deleteData[0].affectedRows) {
+        return { success: true };
+      } else {
+        return { success: false };
+      }
+    } catch (err) {
+      throw { msg: "댓글 삭제 에러입니다, 서버 개발자에게 문의해주세요." };
+    }
+  }
 }
 
 module.exports = CommentStorage;

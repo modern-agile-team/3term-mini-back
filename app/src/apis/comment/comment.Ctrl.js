@@ -32,6 +32,21 @@ const process = {
       throw res.status(500).json(err);
     }
   },
+
+  commentDelete: async (req, res) => {
+    const comment = new Comment(req);
+    const response = await comment.dropComment(req);
+
+    try {
+      if (response.success) {
+        return res.status(200).json(response);
+      } else {
+        return res.status(404).json(response);
+      }
+    } catch (err) {
+      throw res.status(500).json(err);
+    }
+  },
 };
 
 module.exports = {
