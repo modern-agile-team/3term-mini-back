@@ -12,8 +12,11 @@ router.delete(`/deleteBoard/:no`, boardCtrl.process.delete);
 
 // 1팀
 
-//게시판 접속
+//비회원 게시판 접속
 router.get("/connect/:boardNo", boardCtrl.process.connect);
+
+//회원 게시판 접속
+router.get("/connect/:boardNo/:userNo", boardCtrl.process.userBoard);
 
 // 수정 전 화면
 router.get(
