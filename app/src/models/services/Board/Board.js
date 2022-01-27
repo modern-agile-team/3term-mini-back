@@ -16,6 +16,7 @@ class Board {
 
     try {
       const response = await BoardStorage.findOneByBoardNo(no);
+
       return response[0][0];
     } catch (err) {
       return { success: false, msg: err };
@@ -25,6 +26,7 @@ class Board {
     const no = req.params.no;
     try {
       const response = await BoardStorage.deleteBoard(no);
+
       return response;
     } catch (err) {
       return { success: false, msg: err };
