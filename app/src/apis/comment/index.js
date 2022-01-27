@@ -5,10 +5,13 @@ const commentCtrl = require("./comment.Ctrl");
 
 const router = express.Router();
 
-router.post("/create", commentCtrl.process.commentCreate);
+// 댓글 작성
+router.post("/", commentCtrl.process.createComment);
 
-router.put("/update", commentCtrl.process.commentUpdate);
+// 댓글 수정
+router.put("/", commentCtrl.process.updateComment);
 
-router.delete("/delete/:cmtNo", commentCtrl.process.commentDelete);
+// 댓글 삭제
+router.delete("/:cmtNo", commentCtrl.process.deleteComment);
 
 module.exports = router;

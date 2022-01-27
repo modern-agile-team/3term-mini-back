@@ -8,10 +8,10 @@ class Comment {
     this.body = req.body;
   }
 
-  async insertComment() {
+  async commentToSave() {
     try {
-      const commentInfo = this.body;
-      const comment = await CommentStorage.inputComment(commentInfo);
+      const cmtInfoToSave = this.body;
+      const comment = await CommentStorage.insertComment(cmtInfoToSave);
 
       if (comment.success) {
         return { success: true, msg: "댓글 작성이 완료되었습니다." };
@@ -23,10 +23,10 @@ class Comment {
     }
   }
 
-  async modifyComment() {
+  async commentToChange() {
     try {
-      const updateCommentInfo = this.body;
-      const comment = await CommentStorage.putComment(updateCommentInfo);
+      const cmtInfoToChange = this.body;
+      const comment = await CommentStorage.modifyComment(cmtInfoToChange);
       if (comment.success) {
         return { success: true, msg: "댓글 수정이 완료되었습니다." };
       } else {
@@ -37,10 +37,10 @@ class Comment {
     }
   }
 
-  async dropComment() {
+  async commentToPop() {
     try {
-      const deleteCommentInfo = this.params;
-      const comment = await CommentStorage.removeComment(deleteCommentInfo);
+      const cmtIntoToPop = this.params;
+      const comment = await CommentStorage.dropComment(cmtIntoToPop);
 
       if (comment.success) {
         return { success: true, msg: "댓글 삭제가 완료되었습니다." };

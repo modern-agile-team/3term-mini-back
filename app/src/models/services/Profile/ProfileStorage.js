@@ -3,17 +3,17 @@
 const mysql = require("../../../config/mysql");
 
 class ProfileStorage {
-  static async findOneByProfile(userByProfile) {
+  static async selectProfile(profileUserNo) {
     try {
       const query = `SELECT users.name, users.nickname, users.mail, COUNT(boards.no) AS boards 
           FROM users 
           LEFT JOIN boards 
           ON users.no = boards.user_no 
           WHERE users.no=?`;
-      const infoProfile = await mysql.query(query, [userByProfile]);
+      const selectResult = await mysql.query(query, [profileUserNo]);
 
-      if (infoProfile[0].length) {
-        return { success: true, infoProfile: infoProfile[0] };
+      if (selectResult[0].length) {
+        return { success: true, selectResult: selectResult[0] };
       } else {
         return { success: false };
       }
