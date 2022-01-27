@@ -5,6 +5,6 @@ const profileCtrl = require("./profile.Ctrl");
 
 const router = express.Router();
 
-router.get("/:findByUserProfile", profileCtrl.process.searchProfile);
+router.get("/:userNo", profileCtrl.process.readProfile);
 
 module.exports = router;

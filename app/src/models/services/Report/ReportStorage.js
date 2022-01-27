@@ -18,11 +18,10 @@ class ReportStorage {
       return { err: err };
     }
   }
-  static async addBoardReport(reportBoard) {
-    const { reportedBoardNo, reportUserNo, description, reportId } =
-      reportBoard;
-
+  static async insertBoardReport(reportBoard) {
     try {
+      const { reportedBoardNo, reportUserNo, description, reportId } =
+        reportBoard;
       const query = `INSERT INTO report_boards(reported_board_no, report_user_no, description, first_check, second_check, third_check) 
                     VALUES(?, ?, ?, ?, ?, ?);`;
       const reportSave = await mysql.query(query, [
@@ -40,14 +39,14 @@ class ReportStorage {
         return { success: false };
       }
     } catch (err) {
-      throw { err: "Server Error", code: err.code };
+      throw { err: "게시글 신고 접수 오류입니다. 서버 개발자에게 문의하세요." };
     }
   }
 
-  static async addUserReport(reportUser) {
-    const { reportedUserNo, reportUserNo, description, reportId } = reportUser;
-
+  static async insertUserReport(reportUser) {
     try {
+      const { reportedUserNo, reportUserNo, description, reportId } =
+        reportUser;
       const query = `INSERT INTO report_users(reported_user_no, report_user_no, description, first_check, second_check, third_check) 
                     VALUES(?, ?, ?, ?, ?, ?);`;
       const reportSave = await mysql.query(query, [
@@ -65,7 +64,7 @@ class ReportStorage {
         return { success: false };
       }
     } catch (err) {
-      throw { err: "Server Error", code: err.code };
+      throw { msg: "이용자 신고 접수 오류입니다. 서버 개발자에게 문의하세요." };
     }
   }
 }

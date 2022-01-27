@@ -5,9 +5,9 @@ const reportCtrl = require("./report.Ctrl");
 
 const router = express.Router();
 
-router.get("/", reportCtrl.lookUp.lookUpReportPage);
+router.get("/", reportCtrl.lookUp.readReport);
 
-router.post("/board", reportCtrl.process.boardReport);
-router.post("/user", reportCtrl.process.userReport);
+router.post("/board", reportCtrl.process.createBoardReport);
+router.post("/user", reportCtrl.process.createUserReport);
 
 module.exports = router;

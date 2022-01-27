@@ -11,7 +11,16 @@ class Board {
   async boardAll() {
     return await BoardStorage.findAllByBoards();
   }
+  async findOneByBoard() {
+    const boardNo = this.body;
 
+    try {
+      const response = await BoardStorage.findOneByBoardNo(no);
+      return response[0][0];
+    } catch (err) {
+      return { success: false, msg: err };
+    }
+  }
   async deleteBoard(req) {
     const no = req.params.no;
     try {
@@ -22,29 +31,46 @@ class Board {
     }
   }
 
-  async findOneByBoard(req) {
-    const no = req.params.no;
-
-    try {
-      const response = await BoardStorage.findOneByBoardNo(no);
-      return response[0][0];
-    } catch (err) {
-      return { success: false, msg: err };
-    }
-  }
-
   //1팀
   async boardConnect() {
     const boardNo = this.params;
     try {
       const board = await BoardStorage.connectBoard(boardNo);
-      if (board.success) {
-        return { success: board.success, board: board.data };
+      const comment = await BoardStorage.findCmtAllByBoardNo(boardNo);
+
+      if (board.success && comment.success) {
+        return {
+          success: board.success,
+          board: board.data[0],
+          comment: comment.comment,
+        };
+      } else if (!comment.success) {
+        return {
+          success: board.success,
+          board: board.data[0],
+        };
       } else {
         return { success: board.success, msg: "값을 찾을 수 없습니다." };
       }
     } catch (err) {
       return { err };
+    }
+  }
+
+  async userBoardConnect() {
+    const boardInfo = this.params;
+    try {
+      const board = await BoardStorage.userConnectBoard(boardInfo);
+      if (board.boardInfo[0].user_no === Number(boardInfo.userNo)) {
+        return { success: true, data: board };
+      } else {
+        return {
+          success: false,
+          msg: "자신이 직접 작성한 게시물이 아니거나 로그인이 되어있지 않습니다.",
+        };
+      }
+    } catch (err) {
+      return { success: false, err };
     }
   }
 
@@ -103,7 +129,14 @@ class Board {
     try {
       const userNo = this.params;
       const findBoard = await BoardStorage.findByThisBoardInfo(userNo);
-      return { success: true, boardInfo: findBoard.boardInfo[0] };
+      if (findBoard.success) {
+        return {
+          success: findBoard.success,
+          boardInfo: findBoard.boardInfo[0],
+        };
+      } else {
+        return { success: findBoard.success, msg: "값이 들어있지 않습니다" };
+      }
     } catch (err) {
       return { success: false, msg: err };
     }
