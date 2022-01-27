@@ -11,23 +11,23 @@ class Board {
   async boardAll() {
     return await BoardStorage.findAllByBoards();
   }
+  async findOneByBoard() {
+    const boardNo = this.body;
 
-  async deleteBoard(req) {
-    const no = req.params.no;
     try {
-      const response = await BoardStorage.deleteBoard(no);
-      return response;
+      const response = await BoardStorage.findOneByBoardNo(no);
+
+      return response[0][0];
     } catch (err) {
       return { success: false, msg: err };
     }
   }
-
-  async findOneByBoard(req) {
+  async deleteBoard(req) {
     const no = req.params.no;
-
     try {
-      const response = await BoardStorage.findOneByBoardNo(no);
-      return response[0][0];
+      const response = await BoardStorage.deleteBoard(no);
+
+      return response;
     } catch (err) {
       return { success: false, msg: err };
     }
@@ -60,19 +60,53 @@ class Board {
   }
 
   async userBoardConnect() {
-    const boardInfo = this.params;
+    const boardNo = this.params;
     try {
-      const board = await BoardStorage.userConnectBoard(boardInfo);
-      if (board.boardInfo[0].user_no === Number(boardInfo.userNo)) {
-        return { success: true, data: board };
+      const comment = await BoardStorage.findCmtAllByBoardNo(boardNo);
+      const board = await BoardStorage.userConnectBoard(boardNo);
+      console.log(board);
+      if (board.boardInfo) {
+        if (
+          board.boardInfo[0].boardWriteUserNo === Number(boardNo.userNo) &&
+          comment.success
+        ) {
+          return {
+            success: true,
+            boardData: board.boardInfo[0],
+            comments: comment.comment,
+            boardWriter: true,
+          };
+        } else if (
+          board.boardInfo[0].boardWriteUserNo === Number(boardNo.userNo) &&
+          !comment.success
+        ) {
+          return {
+            success: true,
+            boardData: board.boardInfo[0],
+            boardWriter: true,
+          };
+        } else if (
+          board.boardInfo[0].boardWriteUserNo !== Number(boardNo.userNo) &&
+          comment.success
+        ) {
+          return {
+            success: true,
+            boardData: board.boardInfo[0],
+            comments: comment.comment,
+            boardWriter: false,
+          };
+        } else {
+          return {
+            success: true,
+            boardData: board.boardInfo[0],
+            boardWriter: false,
+          };
+        }
       } else {
-        return {
-          success: false,
-          msg: "자신이 직접 작성한 게시물이 아니거나 로그인이 되어있지 않습니다.",
-        };
+        return { success: false, msg: "해당 게시글이 존재하지 않습니다." };
       }
     } catch (err) {
-      return { success: false, err };
+      return { success: false, msg: err };
     }
   }
 
@@ -120,7 +154,10 @@ class Board {
       if (response.success) {
         return { success: response.success, msg: "수정이 완료되었습니다." };
       } else {
-        return { success: response.success, msg: "수정이 되지 않았습니다." };
+        return {
+          success: response.success,
+          msg: "게시물을 작성한 유저가 아닙니다.",
+        };
       }
     } catch (err) {
       return { success: false, msg: err };

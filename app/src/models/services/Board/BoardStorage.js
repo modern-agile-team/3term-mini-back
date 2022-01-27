@@ -71,21 +71,21 @@ class BoardStorage {
   static async userConnectBoard(boardNum) {
     try {
       const query = `
-      SELECT boards.user_no, boards.title, boards.description AS boardDesc, boards.in_date AS boardInDate, comments.description AS replyDesc, comments.in_date AS replyInDate, users.nickname 
-      FROM boards
-      LEFT JOIN comments 
-      on boards.no = comments.board_no
-      JOIN users
-      on comments.user_no = users.no WHERE boards.no = ?`;
+      SELECT users.no AS writerNo, boards.no AS boardNo, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate, users.nickname
+	    FROM boards
+      LEFT JOIN users
+      ON boards.user_no = users.no
+    	WHERE boards.no = ?`;
       const connect = await mysql.query(query, [boardNum.boardNo]);
       if (connect[0].length) {
-        return { success: true, boardInfo: connect[0] };
+        return { boardInfo: connect[0] };
       } else {
         return { success: false };
       }
     } catch (err) {
+      console.log(err);
       throw {
-        msg: "회원 게시판 접속 에러입니다, 서버 개발자에게 문의해주세요.",
+        err: "회원 게시판 접속 에러입니다, 서버 개발자에게 문의해주세요.",
       };
     }
   }
