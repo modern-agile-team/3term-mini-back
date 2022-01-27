@@ -3,9 +3,9 @@
 const Report = require("../../models/services/Report/Report");
 
 const lookUp = {
-  lookUpReportPage: async (req, res) => {
+  readReport: async (req, res) => {
     const report = new Report(req);
-    const response = await report.getReportCategory(req);
+    const response = await report.reportCategoryToGet(req);
 
     if (response.success) {
       return res.status(200).json(response);
@@ -16,9 +16,9 @@ const lookUp = {
 };
 
 const process = {
-  boardReport: async (req, res) => {
+  createBoardReport: async (req, res) => {
     const report = new Report(req);
-    const response = await report.reportBoard(req);
+    const response = await report.boardReportToSave(req);
 
     try {
       if (response.success) {
@@ -31,9 +31,9 @@ const process = {
     }
   },
 
-  userReport: async (req, res) => {
+  createUserReport: async (req, res) => {
     const report = new Report(req);
-    const response = await report.reportUser(req);
+    const response = await report.userReportToSave(req);
 
     try {
       if (response.success) {
