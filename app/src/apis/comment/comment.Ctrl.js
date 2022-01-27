@@ -3,9 +3,9 @@
 const Comment = require("../../models/services/Comment/Comment");
 
 const process = {
-  commentCreate: async (req, res) => {
+  createComment: async (req, res) => {
     const comment = new Comment(req);
-    const response = await comment.insertComment(req);
+    const response = await comment.commentToSave(req);
 
     try {
       if (response.success) {
@@ -18,9 +18,9 @@ const process = {
     }
   },
 
-  commentUpdate: async (req, res) => {
+  updateComment: async (req, res) => {
     const comment = new Comment(req);
-    const response = await comment.modifyComment(req);
+    const response = await comment.commentToChange(req);
 
     try {
       if (response.success) {
@@ -33,9 +33,9 @@ const process = {
     }
   },
 
-  commentDelete: async (req, res) => {
+  deleteComment: async (req, res) => {
     const comment = new Comment(req);
-    const response = await comment.dropComment(req);
+    const response = await comment.commentToPop(req);
 
     try {
       if (response.success) {
