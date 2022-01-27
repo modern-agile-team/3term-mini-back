@@ -17,10 +17,10 @@ const report = require("./src/apis/report");
 const comment = require("./src/apis/comment");
 
 // API 연결
-app.use("/api/profile", profile);
-app.use("/api/board", board);
-app.use("/api/user", user);
-app.use("/api/report", report);
-app.use("/api/comment", comment);
+app.use("/profile", profile);
+app.use("/board", board);
+app.use("/user", user);
+app.use("/report", report);
+app.use("/comment", comment);
 
 module.exports = app;

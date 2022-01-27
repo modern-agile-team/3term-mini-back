@@ -2,17 +2,17 @@
 const mysql = require("../../../config/mysql");
 
 class CommentStorage {
-  static async inputComment(commentInfo) {
+  static async insertComment(cmtInfo) {
     try {
-      const { userNo, boardNo, description } = commentInfo;
+      const { userNo, boardNo, description } = cmtInfo;
       const query = `INSERT INTO comments(user_no, board_no, description) VALUES (?, ?, ?)`;
-      const commentData = await mysql.query(query, [
+      const insertResult = await mysql.query(query, [
         userNo,
         boardNo,
         description,
       ]);
 
-      if (commentData[0].affectedRows) {
+      if (insertResult[0].affectedRows) {
         return { success: true };
       } else {
         return { success: false };
@@ -22,18 +22,18 @@ class CommentStorage {
     }
   }
 
-  static async putComment(updateUserNo) {
+  static async modifyComment(cmtUserNo) {
     try {
-      const { commentId, writeUserNo, boardNo, description } = updateUserNo;
+      const { commentId, writeUserNo, boardNo, description } = cmtUserNo;
       const query = `UPDATE comments SET description=? WHERE no = ? AND user_no=? AND board_no=?`;
-      const updateData = await mysql.query(query, [
+      const modifyResult = await mysql.query(query, [
         description,
         commentId,
         writeUserNo,
         boardNo,
       ]);
 
-      if (updateData[0].affectedRows) {
+      if (modifyResult[0].affectedRows) {
         return { success: true };
       } else {
         return { success: false };
@@ -43,13 +43,13 @@ class CommentStorage {
     }
   }
 
-  static async removeComment(deleteUserNo) {
+  static async dropComment(cmtUserNo) {
     try {
-      const { cmtNo } = deleteUserNo;
+      const { cmtNo } = cmtUserNo;
       const query = `DELETE FROM comments WHERE no=?`;
-      const deleteData = await mysql.query(query, [cmtNo]);
+      const dropResult = await mysql.query(query, [cmtNo]);
 
-      if (deleteData[0].affectedRows) {
+      if (dropResult[0].affectedRows) {
         return { success: true };
       } else {
         return { success: false };
