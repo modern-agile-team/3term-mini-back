@@ -8,15 +8,15 @@ class profile {
     this.body = req;
   }
 
-  async getProfile() {
+  async profileToGet() {
     try {
-      const userByProfile = this.params;
-      const infoProfile = await ProfileStorage.findOneByProfile(userByProfile);
+      const profileNoToGet = this.params;
+      const profile = await ProfileStorage.selectProfile(profileNoToGet);
 
-      if (infoProfile.success) {
+      if (profile.success) {
         return {
           success: true,
-          profile: infoProfile.infoProfile,
+          profile: profile.profile,
           msg: "프로필 불러오기에 성공했습니다.",
         };
       } else {

@@ -3,9 +3,9 @@
 const Profile = require("../../models/services/Profile/Profile");
 
 const process = {
-  searchProfile: async (req, res) => {
-    const profile = new Profile(req.params.findByUserProfile);
-    const response = await profile.getProfile();
+  readProfile: async (req, res) => {
+    const profile = new Profile(req.params);
+    const response = await profile.getProfile(req.params);
 
     if (response.success) {
       return res.status(200).json(response);

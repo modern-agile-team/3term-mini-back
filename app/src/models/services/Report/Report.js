@@ -7,9 +7,9 @@ class report {
     this.params = req.params;
     this.body = req.body;
   }
-  async getReportCategory() {
+  async reportCategoryToGet() {
     try {
-      const reportCategory = await ReportStorage.findReportCategory();
+      const reportCategory = await ReportStorage.selectReportCategory();
 
       if (reportCategory.success) {
         return { success: true, category: reportCategory.category };
@@ -21,18 +21,18 @@ class report {
     }
   }
 
-  async reportBoard() {
+  async boardReportToSave() {
     const reportDetail = this.body;
-    const reportError = {
+    const reportBlackConfirm = {
       desc: reportDetail.description,
       reportId: reportDetail.reportId,
     };
 
     // 게시글 신고창에서 체크박스 또는 신고 사유를 입력하지 않을 경우 발생하는 에러
-    if (!reportError.desc.length || reportError.reportId.length) {
-      const nullKeys = Object.keys(reportError)
+    if (!reportBlackConfirm.desc.length || reportBlackConfirm.reportId.length) {
+      const nullKeys = Object.keys(reportBlackConfirm)
         .map((key) => {
-          if (!reportError[key.length]) return key;
+          if (!reportBlackConfirm[key.length]) return key;
         })
         .join(" ");
       return {
@@ -42,11 +42,9 @@ class report {
     }
 
     try {
-      const reportBoardResult = await ReportStorage.addBoardReport(
-        reportDetail
-      );
+      const reportBoard = await ReportStorage.insertBoardReport(reportDetail);
 
-      if (reportBoardResult.success) {
+      if (reportBoard.success) {
         return {
           success: true,
           msg: "게시글 신고가 접수되었습니다..",
@@ -58,18 +56,18 @@ class report {
       return { success: false, msg: err };
     }
   }
-  async reportUser() {
+  async userReportToSave() {
     const reportDetail = this.body;
-    const reportError = {
+    const reportBlackConfirm = {
       desc: reportDetail.description,
       reportId: reportDetail.reportId,
     };
 
     // 유저 신고창에서 체크박스 또는 신고 사유를 입력하지 않을 경우 발생하는 에러
-    if (!reportError.desc || reportError.reportId) {
-      const nullKeys = Object.keys(reportError)
+    if (!reportBlackConfirm.desc || reportBlackConfirm.reportId) {
+      const nullKeys = Object.keys(reportBlackConfirm)
         .map((key) => {
-          if (!reportError[key].length) return key;
+          if (!reportBlackConfirm[key].length) return key;
         })
         .join(" ");
       return {
@@ -79,9 +77,9 @@ class report {
     }
 
     try {
-      const reportUserResult = await ReportStorage.addUserReport(reportDetail);
+      const reportUser = await ReportStorage.insertUserReport(reportDetail);
 
-      if (reportUserResult.success) {
+      if (reportUser.success) {
         return {
           success: true,
           msg: "이용자 신고가 접수되었습니다.",
