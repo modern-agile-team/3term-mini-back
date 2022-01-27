@@ -44,7 +44,12 @@ class Board {
         return {
           success: board.success,
           board: board.data[0],
-          comment: comment.replyInfo,
+          comment: comment.comment,
+        };
+      } else if (!comment.success) {
+        return {
+          success: board.success,
+          board: board.data[0],
         };
       } else {
         return { success: board.success, msg: "값을 찾을 수 없습니다." };

@@ -25,9 +25,9 @@ router.get(
 );
 
 // 생성
-router.post("/create", boardCtrl.process.create);
+router.post("/boardCreate", boardCtrl.process.create);
 
 // 수정
-router.put("/update/:boardNo/:userNo", boardCtrl.process.update);
+router.put("/boardUpdate/:boardNo/:userNo", boardCtrl.process.update);
 
 module.exports = router;
