@@ -18,7 +18,7 @@ class ReportStorage {
       return { err: err };
     }
   }
-  static async addBoardReport(reportBoard) {
+  static async insertBoardReport(reportBoard) {
     try {
       const { reportedBoardNo, reportUserNo, description, reportId } =
         reportBoard;
@@ -43,7 +43,7 @@ class ReportStorage {
     }
   }
 
-  static async addUserReport(reportUser) {
+  static async insertUserReport(reportUser) {
     try {
       const { reportedUserNo, reportUserNo, description, reportId } =
         reportUser;

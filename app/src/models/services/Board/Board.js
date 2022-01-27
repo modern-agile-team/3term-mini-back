@@ -11,23 +11,21 @@ class Board {
   async boardAll() {
     return await BoardStorage.findAllByBoards();
   }
+  async findOneByBoard() {
+    const boardNo = this.body;
 
+    try {
+      const response = await BoardStorage.findOneByBoardNo(no);
+      return response[0][0];
+    } catch (err) {
+      return { success: false, msg: err };
+    }
+  }
   async deleteBoard(req) {
     const no = req.params.no;
     try {
       const response = await BoardStorage.deleteBoard(no);
       return response;
-    } catch (err) {
-      return { success: false, msg: err };
-    }
-  }
-
-  async findOneByBoard(req) {
-    const no = req.params.no;
-
-    try {
-      const response = await BoardStorage.findOneByBoardNo(no);
-      return response[0][0];
     } catch (err) {
       return { success: false, msg: err };
     }
@@ -44,7 +42,12 @@ class Board {
         return {
           success: board.success,
           board: board.data[0],
-          comment: comment.replyInfo,
+          comment: comment.comment,
+        };
+      } else if (!comment.success) {
+        return {
+          success: board.success,
+          board: board.data[0],
         };
       } else {
         return { success: board.success, msg: "값을 찾을 수 없습니다." };
