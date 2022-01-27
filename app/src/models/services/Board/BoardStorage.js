@@ -27,15 +27,36 @@ class BoardStorage {
   }
 
   //1팀-------------------------------------------------------
+  static async findCmtAllByBoardNo(boardNum) {
+    try {
+      const { boardNo } = boardNum;
+      const query = `
+      SELECT comments.no AS cmtId, comments.user_no AS commentUserNo, description, DATE_FORMAT(in_date,'%m/%d %H:%i') AS inDate, users.nickname
+      FROM comments 
+      LEFT JOIN users
+      ON comments.user_no = users.no
+      WHERE board_no = ?`;
+      const connect = await mysql.query(query, [boardNo]);
+      if (!connect[0].length) {
+        return { success: false };
+      } else {
+        return { success: true, comment: connect[0] };
+      }
+    } catch (err) {
+      throw {
+        msg: "게시판 댓글 조회 에러입니다, 서버 개발자에게 문의해주세요.",
+      };
+    }
+  }
+
   static async connectBoard(boardNum) {
     try {
       const query = `
-      SELECT boards.title, boards.description AS boardDesc, boards.in_date AS boardInDate, replies.description AS replyDesc, replies.in_date AS replyInDate, users.nickname 
-      FROM boards
-      RIGHT JOIN replies 
-      on boards.no = replies.board_no
-      JOIN users
-      on replies.user_no = users.no WHERE boards.no = ?`;
+      SELECT boards.no, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate, users.nickname
+	    FROM boards
+      LEFT JOIN users
+      ON boards.user_no = users.no
+    	WHERE boards.no = ?`;
       const connect = await mysql.query(query, [boardNum.boardNo]);
       if (connect[0].length) {
         return { success: true, data: connect[0] };
@@ -49,15 +70,16 @@ class BoardStorage {
 
   static async userConnectBoard(boardNum) {
     try {
-      const query = `SELECT boards.user_no, boards.title, boards.description AS boardDesc, boards.in_date AS boardInDate, replies.description AS replyDesc, replies.in_date AS replyInDate, users.nickname 
-    FROM boards
-    RIGHT JOIN replies 
-    on boards.no = replies.board_no
-    JOIN users
-    on replies.user_no = users.no WHERE boards.no = ?`;
+      const query = `
+      SELECT boards.user_no, boards.title, boards.description AS boardDesc, boards.in_date AS boardInDate, comments.description AS replyDesc, comments.in_date AS replyInDate, users.nickname 
+      FROM boards
+      LEFT JOIN comments 
+      on boards.no = comments.board_no
+      JOIN users
+      on comments.user_no = users.no WHERE boards.no = ?`;
       const connect = await mysql.query(query, [boardNum.boardNo]);
       if (connect[0].length) {
-        return { boardInfo: connect[0] };
+        return { success: true, boardInfo: connect[0] };
       } else {
         return { success: false };
       }

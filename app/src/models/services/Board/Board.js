@@ -38,8 +38,19 @@ class Board {
     const boardNo = this.params;
     try {
       const board = await BoardStorage.connectBoard(boardNo);
-      if (board.success) {
-        return { success: board.success, board: board.data };
+      const comment = await BoardStorage.findCmtAllByBoardNo(boardNo);
+
+      if (board.success && comment.success) {
+        return {
+          success: board.success,
+          board: board.data[0],
+          comment: comment.comment,
+        };
+      } else if (!comment.success) {
+        return {
+          success: board.success,
+          board: board.data[0],
+        };
       } else {
         return { success: board.success, msg: "값을 찾을 수 없습니다." };
       }
