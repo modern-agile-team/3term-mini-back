@@ -27,7 +27,29 @@ class BoardStorage {
   }
 
   //1팀-------------------------------------------------------
-  static async findCmtAllByBoardNo(boardNum) {
+  static async selectBoardToNonUser(boardNum) {
+    try {
+      const query = `
+      SELECT boards.no, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate, users.nickname
+	    FROM boards
+      LEFT JOIN users
+      ON boards.user_no = users.no
+    	WHERE boards.no = ?`;
+      const selectResult = await mysql.query(query, [boardNum.boardNo]);
+
+      if (selectResult[0].length) {
+        return { success: true, data: selectResult[0] };
+      } else {
+        return { success: false };
+      }
+    } catch (err) {
+      throw {
+        msg: "비회원 게시판 접속 기능 에러입니다, 서버 개발자에게 문의해주세요.",
+      };
+    }
+  }
+
+  static async selectBoardCmt(boardNum) {
     try {
       const { boardNo } = boardNum;
       const query = `
@@ -36,110 +58,103 @@ class BoardStorage {
       LEFT JOIN users
       ON comments.user_no = users.no
       WHERE board_no = ?`;
-      const connect = await mysql.query(query, [boardNo]);
-      if (!connect[0].length) {
+      const selectResult = await mysql.query(query, [boardNo]);
+
+      if (!selectResult[0].length) {
         return { success: false };
       } else {
-        return { success: true, comment: connect[0] };
+        return { success: true, comments: selectResult[0] };
       }
     } catch (err) {
       throw {
-        msg: "게시판 댓글 조회 에러입니다, 서버 개발자에게 문의해주세요.",
+        msg: "회원 게시판 댓글 조회 기능 에러입니다, 서버 개발자에게 문의해주세요.",
       };
     }
   }
 
-  static async connectBoard(boardNum) {
+  static async selectBoardToUser(boardNum) {
     try {
+      const { boardNo } = boardNum;
       const query = `
-      SELECT boards.no, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate, users.nickname
+      SELECT users.no AS writerNo, boards.no AS boardNo, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate, users.nickname
 	    FROM boards
       LEFT JOIN users
       ON boards.user_no = users.no
     	WHERE boards.no = ?`;
-      const connect = await mysql.query(query, [boardNum.boardNo]);
-      if (connect[0].length) {
-        return { success: true, data: connect[0] };
-      } else {
-        return { success: false };
-      }
-    } catch (err) {
-      throw { msg: "게시판 접속 에러입니다, 서버 개발자에게 문의해주세요." };
-    }
-  }
+      const selectResult = await mysql.query(query, [boardNo]);
 
-  static async userConnectBoard(boardNum) {
-    try {
-      const query = `
-      SELECT boards.user_no, boards.title, boards.description AS boardDesc, boards.in_date AS boardInDate, comments.description AS replyDesc, comments.in_date AS replyInDate, users.nickname 
-      FROM boards
-      LEFT JOIN comments 
-      on boards.no = comments.board_no
-      JOIN users
-      on comments.user_no = users.no WHERE boards.no = ?`;
-      const connect = await mysql.query(query, [boardNum.boardNo]);
-      if (connect[0].length) {
-        return { success: true, boardInfo: connect[0] };
+      if (selectResult[0].length) {
+        return { boardInfo: selectResult[0] };
       } else {
         return { success: false };
       }
     } catch (err) {
       throw {
-        msg: "회원 게시판 접속 에러입니다, 서버 개발자에게 문의해주세요.",
+        err: "회원 게시판 접속 기능 에러입니다, 서버 개발자에게 문의해주세요.",
       };
     }
   }
 
   static async createBoard(boardInfo) {
-    const { user_no, title, description } = boardInfo;
     try {
+      const { user_no, title, description } = boardInfo;
       const query = `INSERT INTO boards(user_no, title, description) VALUES(?, ?, ?);`;
-      const create = await mysql.query(query, [user_no, title, description]);
-      if (create[0].affectedRows) {
-        return { success: true };
-      } else {
-        return { success: false };
-      }
-    } catch (err) {
-      throw { err: "게시판 생성 에러입니다, 서버 개발자에게 문의해주세요." };
-    }
-  }
+      const insertResult = await mysql.query(query, [
+        user_no,
+        title,
+        description,
+      ]);
 
-  static async findByThisBoardInfo(userNum) {
-    const { boardNo, userNo } = userNum;
-    try {
-      const query = `SELECT title, description FROM boards WHERE no = ? AND user_no = ?;`;
-      const findBoardInfo = await mysql.query(query, [boardNo, userNo]);
-      if (findBoardInfo.length) {
-        return { success: true, boardInfo: findBoardInfo[0] };
+      if (insertResult[0].affectedRows) {
+        return { success: true };
       } else {
         return { success: false };
       }
     } catch (err) {
       throw {
-        err: "게시글 수정 화면 에러입니다, 서버 개발자에게 문의해주세요.",
+        err: "게시판 생성 기능 에러입니다, 서버 개발자에게 문의해주세요.",
       };
     }
   }
 
-  static async updateBoard(userInfo, boardInfo) {
-    const { title, description } = boardInfo;
-    const { boardNo, userNo } = userInfo;
+  static async updateBoard(updateInfo) {
     try {
+      const { boardNo, userNo, title, description } = updateInfo;
       const query = `UPDATE boards SET title = ?, description = ?  WHERE no = ? AND user_no = ?;`;
-      const update = await mysql.query(query, [
+      const updateResult = await mysql.query(query, [
         title,
         description,
         boardNo,
         userNo,
       ]);
-      if (update[0].affectedRows) {
+
+      if (updateResult[0].affectedRows) {
         return { success: true };
       } else {
         return { success: false };
       }
     } catch (err) {
-      throw { err: "게시글 수정 에러입니다, 서버 개발자에게 문의해주세요." };
+      throw {
+        err: "게시글 수정 기능 에러입니다, 서버 개발자에게 문의해주세요.",
+      };
+    }
+  }
+
+  static async selectBeforeBoard(boardAndUserNo) {
+    try {
+      const { boardNo, userNo } = boardAndUserNo;
+      const query = `SELECT title, description FROM boards WHERE no = ? AND user_no = ?;`;
+      const selectResult = await mysql.query(query, [boardNo, userNo]);
+
+      if (selectResult[0].length) {
+        return { success: true, boardInfo: selectResult[0] };
+      } else {
+        return { success: false };
+      }
+    } catch (err) {
+      throw {
+        err: "게시글 수정화면 에러입니다, 서버 개발자에게 문의해주세요.",
+      };
     }
   }
 }

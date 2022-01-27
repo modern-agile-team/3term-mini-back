@@ -11,48 +11,53 @@ class Board {
   async boardAll() {
     return await BoardStorage.findAllByBoards();
   }
+  async findOneByBoard() {
+    const boardNo = this.body;
 
+    try {
+      const response = await BoardStorage.findOneByBoardNo(no);
+
+      return response[0][0];
+    } catch (err) {
+      return { success: false, msg: err };
+    }
+  }
   async deleteBoard(req) {
     const no = req.params.no;
     try {
       const response = await BoardStorage.deleteBoard(no);
+
       return response;
     } catch (err) {
       return { success: false, msg: err };
     }
   }
 
-  async findOneByBoard(req) {
-    const no = req.params.no;
-
-    try {
-      const response = await BoardStorage.findOneByBoardNo(no);
-      return response[0][0];
-    } catch (err) {
-      return { success: false, msg: err };
-    }
-  }
-
   //1팀
-  async boardConnect() {
-    const boardNo = this.params;
+  async nonUserBoardConnect() {
     try {
-      const board = await BoardStorage.connectBoard(boardNo);
-      const comment = await BoardStorage.findCmtAllByBoardNo(boardNo);
+      const boardNo = this.params;
+      const board = await BoardStorage.selectBoardToNonUser(boardNo);
+      const comment = await BoardStorage.selectBoardCmt(boardNo);
 
       if (board.success && comment.success) {
         return {
-          success: board.success,
+          success: true,
           board: board.data[0],
-          comment: comment.comment,
+          comments: comment.comments,
+          msg: "비회원: 게시글 접속 성공",
         };
       } else if (!comment.success) {
         return {
-          success: board.success,
+          success: true,
           board: board.data[0],
+          msg: "비회원: 게시글 접속 성공(댓글 X)",
         };
       } else {
-        return { success: board.success, msg: "값을 찾을 수 없습니다." };
+        return {
+          success: false,
+          msg: "비회원 : 해당 게시글이 존재하지 않습니다.",
+        };
       }
     } catch (err) {
       return { err };
@@ -60,43 +65,86 @@ class Board {
   }
 
   async userBoardConnect() {
-    const boardInfo = this.params;
+    const boardNo = this.params;
     try {
-      const board = await BoardStorage.userConnectBoard(boardInfo);
-      if (board.boardInfo[0].user_no === Number(boardInfo.userNo)) {
-        return { success: true, data: board };
+      const board = await BoardStorage.selectBoardToUser(boardNo);
+      const comment = await BoardStorage.selectBoardCmt(boardNo);
+
+      if (board.success) {
+        if (
+          board.boardInfo[0].boardWriteUserNo === Number(boardNo.userNo) &&
+          comment.success
+        ) {
+          return {
+            success: true,
+            boardData: board.boardInfo[0],
+            comments: comment.comments,
+            boardWriter: true,
+            msg: "회원 : 게시글 접속 성공",
+          };
+        } else if (
+          board.boardInfo[0].boardWriteUserNo === Number(boardNo.userNo) &&
+          !comment.success
+        ) {
+          return {
+            success: true,
+            boardData: board.boardInfo[0],
+            boardWriter: true,
+            msg: "회원 : 게시글 접속 성공(댓글 X)",
+          };
+        } else if (
+          board.boardInfo[0].boardWriteUserNo !== Number(boardNo.userNo) &&
+          comment.success
+        ) {
+          return {
+            success: true,
+            boardData: board.boardInfo[0],
+            comments: comment.comments,
+            boardWriter: false,
+            msg: "회원 : 게시글 접속 성공(댓글 O, 작성자 X)",
+          };
+        } else {
+          return {
+            success: true,
+            boardData: board.boardInfo[0],
+            boardWriter: false,
+            msg: "회원 : 게시글 접속 성공(댓글 X, 작성자 X)",
+          };
+        }
       } else {
         return {
           success: false,
-          msg: "자신이 직접 작성한 게시물이 아니거나 로그인이 되어있지 않습니다.",
+          msg: "회원 : 해당 게시글이 존재하지 않습니다.",
         };
       }
     } catch (err) {
-      return { success: false, err };
+      return { success: false, msg: err };
     }
   }
 
   async boardCreate() {
+    const boardWrite = this.body;
+
+    if (
+      !boardWrite.title.replace(/^\s+|\s+$/gm, "").length ||
+      !boardWrite.description.replace(/^\s+|\s+$/gm, "").length
+    ) {
+      return {
+        success: false,
+        msg: "제목 또는 내용을 입력해주세요",
+      };
+    }
+
     try {
-      const boardWrite = this.body;
-      if (
-        boardWrite.title.length === 0 ||
-        boardWrite.description.length === 0
-      ) {
-        return {
-          success: false,
-          msg: "제목 또는 내용을 입력해주세요",
-        };
-      }
       const response = await BoardStorage.createBoard(boardWrite);
 
       if (response.success) {
         return {
           success: true,
-          msg: "게시물 등록이 완료되었습니다.",
+          msg: "게시물 등록 성공",
         };
       } else {
-        return { success: false, msg: "게시물 등록이 실패하였습니다." };
+        return { success: false, msg: "게시물 등록 실패" };
       }
     } catch (err) {
       return { success: false, msg: err };
@@ -104,40 +152,47 @@ class Board {
   }
 
   async boardUpdate() {
+    const boardWrite = this.body;
+
+    if (
+      !boardWrite.title.replace(/^\s+|\s+$/gm, "").length ||
+      !boardWrite.description.replace(/^\s+|\s+$/gm, "").length
+    ) {
+      return {
+        success: false,
+        msg: "제목 또는 내용을 입력해주세요.",
+      };
+    }
+
     try {
-      const boardWrite = this.body;
-      if (
-        boardWrite.title.length === 0 ||
-        boardWrite.description.length === 0
-      ) {
+      const board = await BoardStorage.updateBoard(boardWrite);
+
+      if (board.success) {
+        return { success: true, msg: "게시글 수정 완료" };
+      } else {
         return {
           success: false,
-          msg: "제목 또는 내용을 입력해주세요",
+          msg: "게시글 수정 실패(작성자 X)",
         };
-      }
-      const userNo = this.params;
-      const response = await BoardStorage.updateBoard(userNo, boardWrite);
-      if (response.success) {
-        return { success: response.success, msg: "수정이 완료되었습니다." };
-      } else {
-        return { success: response.success, msg: "수정이 되지 않았습니다." };
       }
     } catch (err) {
       return { success: false, msg: err };
     }
   }
 
-  async boardByBeforUpdate() {
+  async boardByBeforeUpdate() {
     try {
-      const userNo = this.params;
-      const findBoard = await BoardStorage.findByThisBoardInfo(userNo);
-      if (findBoard.success) {
+      const userNoOfBoard = this.params;
+      const board = await BoardStorage.selectBeforeBoard(userNoOfBoard);
+
+      if (board.success) {
         return {
-          success: findBoard.success,
-          boardInfo: findBoard.boardInfo[0],
+          success: true,
+          boardInfo: board.boardInfo[0],
+          msg: "게시글 수정화면 접속 성공",
         };
       } else {
-        return { success: findBoard.success, msg: "값이 들어있지 않습니다" };
+        return { success: false, msg: "해당 게시글이 존재하지 않습니다." };
       }
     } catch (err) {
       return { success: false, msg: err };
