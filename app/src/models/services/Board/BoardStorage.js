@@ -82,9 +82,8 @@ class BoardStorage {
       ON boards.user_no = users.no
     	WHERE boards.no = ?`;
       const selectResult = await mysql.query(query, [boardNo]);
-
       if (selectResult[0].length) {
-        return { boardInfo: selectResult[0] };
+        return { success: true, boardInfo: selectResult[0] };
       } else {
         return { success: false };
       }

@@ -69,7 +69,6 @@ class Board {
     try {
       const board = await BoardStorage.selectBoardToUser(boardNo);
       const comment = await BoardStorage.selectBoardCmt(boardNo);
-
       if (board.success) {
         if (
           board.boardInfo[0].boardWriteUserNo === Number(boardNo.userNo) &&
