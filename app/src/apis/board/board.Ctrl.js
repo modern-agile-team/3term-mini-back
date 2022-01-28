@@ -2,6 +2,7 @@
 
 const Board = require("../../models/services/Board/Board");
 const Boards = require("../../models/services/Board/Board");
+const logger = require("../../config/logger");
 const { connectBoard } = require("../../models/services/Board/BoardStorage");
 
 const process = {
@@ -23,68 +24,84 @@ const process = {
   },
 
   // 1팀
-  connect: async (req, res) => {
-    const board = new Boards(req);
-
+  readNonUserConnect: async (req, res) => {
     try {
-      const connectBoard = await board.boardConnect(req);
+      const board = new Boards(req);
+      const response = await board.nonUserBoardConnect(req);
 
-      if (connectBoard.success) {
-        return res.status(201).json(connectBoard);
+      if (response.success) {
+        logger.info(`GET /connect 201 ${response.success} ${response.msg}`);
+        return res.status(201).json(response);
       } else {
-        return res.status(404).json(connectBoard);
+        logger.error(`GET /connect 404  ${response.success} ${response.msg}`);
+        return res.status(404).json(response);
       }
     } catch (err) {
       throw res.status(500).json(err);
     }
   },
 
-  userBoard: async (req, res) => {
-    const board = new Boards(req);
-    const userBoard = await board.userBoardConnect(req);
-    return res.json(userBoard);
-  },
-
-  create: async (req, res) => {
-    const board = new Boards(req);
-
+  readUserConnect: async (req, res) => {
     try {
-      const createBoard = await board.boardCreate(req);
-
-      if (createBoard.success) {
-        return res.status(201).json(createBoard);
+      const board = new Boards(req);
+      const response = await board.userBoardConnect(req);
+      if (response.success) {
+        logger.info(`GET /connect 201 ${response.success} ${response.msg}`);
+        return res.status(200).json(response);
       } else {
-        return res.status(400).json(createBoard);
+        logger.error(`GET /connect 404  ${response.success} ${response.msg}`);
+        return res.status(404).json(response);
       }
     } catch (err) {
       throw res.status(500).json(err);
     }
   },
 
-  update: async (req, res) => {
-    const board = new Boards(req);
-
+  readBeforeBoard: async (req, res) => {
     try {
-      const updateBoard = await board.boardUpdate(req);
-      if (updateBoard.success) {
-        return res.status(200).json(updateBoard);
+      const board = new Boards(req);
+      const response = await board.boardByBeforeUpdate(req);
+
+      if (response.success) {
+        logger.info(`GET /connect 200 ${response.success} ${response.msg}`);
+        return res.status(200).json(response);
       } else {
-        return res.status(400).json(updateBoard);
+        logger.error(`GET /connect 400  ${response.success} ${response.msg}`);
+        return res.status(400).json(response);
       }
     } catch (err) {
       throw res.status(500).json(err);
     }
   },
 
-  findByBeforBoardInfo: async (req, res) => {
-    const board = new Boards(req);
-
+  createBoard: async (req, res) => {
     try {
-      const findByBeforBoardInfo = await board.boardByBeforUpdate(req);
-      if (findByBeforBoardInfo.success) {
-        return res.status(200).json(findByBeforBoardInfo);
+      const board = new Boards(req);
+      const response = await board.boardCreate(req);
+
+      if (response.success) {
+        logger.info(`POST /connect 201 ${response.success} ${response.msg}`);
+        return res.status(201).json(response);
       } else {
-        return res.status(400).json(findByBeforBoardInfo);
+        logger.error(`POST /connect 400  ${response.success} ${response.msg}`);
+        return res.status(400).json(response);
+      }
+    } catch (err) {
+      throw res.status(500).json(err);
+    }
+  },
+
+  updateBoard: async (req, res) => {
+    try {
+      const board = new Boards(req);
+      const response = await board.boardUpdate(req);
+
+      if (response.success) {
+        logger.info(`PUT /connect 200 ${response.success} ${response.msg}`);
+        return res.status(200).json(response);
+      } else {
+        logger.error(`PUT /connect 400  ${response.success} ${response.msg}`);
+        return res.status(400).json(response);
       }
     } catch (err) {
       throw res.status(500).json(err);
