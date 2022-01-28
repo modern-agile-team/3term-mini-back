@@ -30,12 +30,15 @@ class BoardStorage {
   static async selectToNonUser(boardNum) {
     try {
       const query = `
-      SELECT boards.no, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate, users.nickname
+      SELECT boards.no, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate, users.nickname, (SELECT count(*) from comments left join boards on boards.no = comments.board_no where boards.no = ?) as commentLength
 	    FROM boards
       LEFT JOIN users
       ON boards.user_no = users.no
     	WHERE boards.no = ?`;
-      const selectResult = await mysql.query(query, [boardNum.boardNo]);
+      const selectResult = await mysql.query(query, [
+        boardNum.boardNo,
+        boardNum.boardNo,
+      ]);
 
       if (selectResult[0].length) {
         return { success: true, data: selectResult[0] };
