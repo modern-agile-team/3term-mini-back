@@ -16,7 +16,7 @@ class profile {
       if (profile.success) {
         return {
           success: true,
-          profile: profile.profile,
+          profile: profile.selectResult[0],
           msg: "프로필 불러오기에 성공했습니다.",
         };
       } else {
