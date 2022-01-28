@@ -34,11 +34,11 @@ class Board {
   }
 
   //1팀
-  async nonUserBoardConnect() {
+  async nonUserConnect() {
     try {
       const boardNo = this.params;
-      const board = await BoardStorage.selectBoardToNonUser(boardNo);
-      const comment = await BoardStorage.selectBoardCmt(boardNo);
+      const board = await BoardStorage.selectToNonUser(boardNo);
+      const comment = await BoardStorage.selectCmt(boardNo);
 
       if (board.success && comment.success) {
         return {
@@ -64,11 +64,11 @@ class Board {
     }
   }
 
-  async userBoardConnect() {
+  async userConnect() {
     const boardNo = this.params;
     try {
-      const board = await BoardStorage.selectBoardToUser(boardNo);
-      const comment = await BoardStorage.selectBoardCmt(boardNo);
+      const board = await BoardStorage.selectToUser(boardNo);
+      const comment = await BoardStorage.selectCmt(boardNo);
       if (board.success) {
         if (
           board.boardInfo[0].boardWriteUserNo === Number(boardNo.userNo) &&
@@ -121,7 +121,7 @@ class Board {
     }
   }
 
-  async boardCreate() {
+  async create() {
     const boardWrite = this.body;
 
     if (
@@ -135,7 +135,7 @@ class Board {
     }
 
     try {
-      const response = await BoardStorage.createBoard(boardWrite);
+      const response = await BoardStorage.create(boardWrite);
 
       if (response.success) {
         return {
@@ -150,7 +150,7 @@ class Board {
     }
   }
 
-  async boardUpdate() {
+  async update() {
     const boardWrite = this.body;
 
     if (
@@ -164,7 +164,7 @@ class Board {
     }
 
     try {
-      const board = await BoardStorage.updateBoard(boardWrite);
+      const board = await BoardStorage.update(boardWrite);
 
       if (board.success) {
         return { success: true, msg: "게시글 수정 완료" };
@@ -179,10 +179,10 @@ class Board {
     }
   }
 
-  async boardByBeforeUpdate() {
+  async beforeUpdate() {
     try {
       const userNoOfBoard = this.params;
-      const board = await BoardStorage.selectBeforeBoard(userNoOfBoard);
+      const board = await BoardStorage.selectBeforeView(userNoOfBoard);
 
       if (board.success) {
         return {

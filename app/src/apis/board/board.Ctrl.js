@@ -28,7 +28,7 @@ const process = {
   readNonUserConnect: async (req, res) => {
     try {
       const board = new Boards(req);
-      const response = await board.nonUserBoardConnect(req);
+      const response = await board.nonUserConnect(req);
 
       if (response.success) {
         logger.info(`GET /connect 201 ${response.success} ${response.msg}`);
@@ -45,7 +45,7 @@ const process = {
   readUserConnect: async (req, res) => {
     try {
       const board = new Boards(req);
-      const response = await board.userBoardConnect(req);
+      const response = await board.userConnect(req);
       if (response.success) {
         logger.info(`GET /connect 201 ${response.success} ${response.msg}`);
         return res.status(200).json(response);
@@ -61,7 +61,7 @@ const process = {
   readBeforeBoard: async (req, res) => {
     try {
       const board = new Boards(req);
-      const response = await board.boardByBeforeUpdate(req);
+      const response = await board.beforeUpdate(req);
 
       if (response.success) {
         logger.info(`GET /connect 200 ${response.success} ${response.msg}`);
@@ -78,7 +78,7 @@ const process = {
   createBoard: async (req, res) => {
     try {
       const board = new Boards(req);
-      const response = await board.boardCreate(req);
+      const response = await board.create(req);
 
       if (response.success) {
         logger.info(`POST /connect 201 ${response.success} ${response.msg}`);
@@ -95,7 +95,7 @@ const process = {
   updateBoard: async (req, res) => {
     try {
       const board = new Boards(req);
-      const response = await board.boardUpdate(req);
+      const response = await board.update(req);
 
       if (response.success) {
         logger.info(`PUT /connect 200 ${response.success} ${response.msg}`);
