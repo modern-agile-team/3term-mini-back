@@ -37,6 +37,7 @@ class BoardStorage {
       ON comments.user_no = users.no
       WHERE board_no = ?`;
       const connect = await mysql.query(query, [boardNo]);
+
       if (!connect[0].length) {
         return { success: false };
       } else {

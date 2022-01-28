@@ -2,6 +2,7 @@
 
 const Board = require("../../models/services/Board/Board");
 const Boards = require("../../models/services/Board/Board");
+const logger = require("../../config/logger");
 const { connectBoard } = require("../../models/services/Board/BoardStorage");
 
 const process = {
@@ -30,8 +31,10 @@ const process = {
       const connectBoard = await board.boardConnect(req);
 
       if (connectBoard.success) {
+        logger.info(`GET /connect 201 ${response.success} ${response.msg}`);
         return res.status(201).json(connectBoard);
       } else {
+        logger.error(`GET /connect 404  ${response.success} ${response.err}`);
         return res.status(404).json(connectBoard);
       }
     } catch (err) {

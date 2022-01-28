@@ -64,7 +64,7 @@ class Board {
     try {
       const comment = await BoardStorage.findCmtAllByBoardNo(boardNo);
       const board = await BoardStorage.userConnectBoard(boardNo);
-      console.log(board);
+
       if (board.boardInfo) {
         if (
           board.boardInfo[0].boardWriteUserNo === Number(boardNo.userNo) &&
