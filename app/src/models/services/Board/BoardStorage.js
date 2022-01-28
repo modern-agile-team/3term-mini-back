@@ -27,7 +27,7 @@ class BoardStorage {
   }
 
   //1팀-------------------------------------------------------
-  static async selectBoardToNonUser(boardNum) {
+  static async selectToNonUser(boardNum) {
     try {
       const query = `
       SELECT boards.no, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate, users.nickname
@@ -49,7 +49,7 @@ class BoardStorage {
     }
   }
 
-  static async selectBoardCmt(boardNum) {
+  static async selectCmt(boardNum) {
     try {
       const { boardNo } = boardNum;
       const query = `
@@ -72,7 +72,7 @@ class BoardStorage {
     }
   }
 
-  static async selectBoardToUser(boardNum) {
+  static async selectToUser(boardNum) {
     try {
       const { boardNo } = boardNum;
       const query = `
@@ -94,7 +94,7 @@ class BoardStorage {
     }
   }
 
-  static async createBoard(boardInfo) {
+  static async create(boardInfo) {
     try {
       const { user_no, title, description } = boardInfo;
       const query = `INSERT INTO boards(user_no, title, description) VALUES(?, ?, ?);`;
@@ -116,7 +116,7 @@ class BoardStorage {
     }
   }
 
-  static async updateBoard(updateInfo) {
+  static async update(updateInfo) {
     try {
       const { boardNo, userNo, title, description } = updateInfo;
       const query = `UPDATE boards SET title = ?, description = ?  WHERE no = ? AND user_no = ?;`;
@@ -139,7 +139,7 @@ class BoardStorage {
     }
   }
 
-  static async selectBeforeBoard(boardAndUserNo) {
+  static async selectBeforeView(boardAndUserNo) {
     try {
       const { boardNo, userNo } = boardAndUserNo;
       const query = `SELECT title, description FROM boards WHERE no = ? AND user_no = ?;`;
