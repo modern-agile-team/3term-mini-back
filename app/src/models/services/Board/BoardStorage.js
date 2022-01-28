@@ -30,7 +30,7 @@ class BoardStorage {
   static async selectToNonUser(boardNum) {
     try {
       const query = `
-      SELECT boards.no, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate, users.nickname, (SELECT count(*) from comments left join boards on boards.no = comments.board_no where boards.no = ?) as commentLength
+      SELECT (SELECT count(*) from comments left join boards on boards.no = comments.board_no where boards.no = ?) as commentCount, boards.no, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate, users.nickname
 	    FROM boards
       LEFT JOIN users
       ON boards.user_no = users.no
@@ -79,12 +79,12 @@ class BoardStorage {
     try {
       const { boardNo } = boardNum;
       const query = `
-      SELECT users.no AS writerNo, boards.no AS boardNo, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate, users.nickname
+      SELECT (SELECT count(*) from comments left join boards on boards.no = comments.board_no where boards.no = ?) as commentCount, users.no AS writerNo, boards.no AS boardNo, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate, users.nickname
 	    FROM boards
       LEFT JOIN users
       ON boards.user_no = users.no
     	WHERE boards.no = ?`;
-      const selectResult = await mysql.query(query, [boardNo]);
+      const selectResult = await mysql.query(query, [boardNo, boardNo]);
       if (selectResult[0].length) {
         return { success: true, boardInfo: selectResult[0] };
       } else {
