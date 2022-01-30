@@ -46,6 +46,7 @@ const process = {
     try {
       const board = new Boards(req);
       const response = await board.userConnect(req);
+
       if (response.success) {
         logger.info(`GET /connect 201 ${response.success} ${response.msg}`);
         return res.status(200).json(response);

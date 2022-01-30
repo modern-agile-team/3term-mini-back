@@ -66,10 +66,15 @@ class Board {
 
   async userConnect() {
     const boardNo = this.params;
+
     try {
       const board = await BoardStorage.selectToUser(boardNo);
       const comment = await BoardStorage.selectCmt(boardNo);
+
       if (board.success) {
+        // 게시판 접속 성공시 조회수 증가
+        BoardStorage.updateHit(boardNo);
+
         if (
           board.boardInfo[0].boardWriteUserNo === Number(boardNo.userNo) &&
           comment.success
