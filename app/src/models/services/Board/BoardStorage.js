@@ -4,7 +4,11 @@ const mysql = require("../../../config/mysql");
 class BoardStorage {
   //2팀
   static async findAllByBoards() {
-    const query = `SELECT * FROM boards;`;
+    const query = `
+    select boards.no, boards.title, boards.description, boards.in_date, boards.modify_date, boards.hit, users.name
+    from boards
+    left join users
+    on boards.user_no = users.no;`;
     return await mysql.query(query);
   }
 
@@ -79,7 +83,7 @@ class BoardStorage {
     try {
       const { boardNo } = boardNum;
       const query = `
-      SELECT (SELECT count(*) from comments left join boards on boards.no = comments.board_no where boards.no = ?) as commentCount, users.no AS writerNo, boards.no AS boardNo, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate, users.nickname
+      SELECT (SELECT count(*) from comments left join boards on boards.no = comments.board_no where boards.no = ?) as commentCount, users.no AS writerNo, hit, boards.no AS boardNo, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate, users.nickname
 	    FROM boards
       LEFT JOIN users
       ON boards.user_no = users.no
@@ -142,9 +146,9 @@ class BoardStorage {
     }
   }
 
-  static async selectBeforeView(boardAndUserNo) {
+  static async selectBeforeView(boardNoAndUserNo) {
     try {
-      const { boardNo, userNo } = boardAndUserNo;
+      const { boardNo, userNo } = boardNoAndUserNo;
       const query = `SELECT title, description FROM boards WHERE no = ? AND user_no = ?;`;
       const selectResult = await mysql.query(query, [boardNo, userNo]);
 
@@ -156,6 +160,24 @@ class BoardStorage {
     } catch (err) {
       throw {
         err: "게시글 수정화면 에러입니다, 서버 개발자에게 문의해주세요.",
+      };
+    }
+  }
+
+  static async updateHit(connectionInfo) {
+    try {
+      const { boardNo, userNo } = connectionInfo;
+      const query = `UPDATE boards SET hit = IFNULL(hit, 0) + 1 WHERE no=? AND (SELECT no FROM users WHERE no=?);`;
+      const updateResult = await mysql.query(query, [boardNo, userNo]);
+
+      if (updateResult[0].affectedRows) {
+        return { success: true };
+      } else {
+        return { success: false };
+      }
+    } catch (err) {
+      throw {
+        err: "게시글 조회수 에러입니다, 서버 개발자에게 문의해주세요.",
       };
     }
   }
