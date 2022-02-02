@@ -4,7 +4,11 @@ const mysql = require("../../../config/mysql");
 class BoardStorage {
   //2팀
   static async findAllByBoards() {
-    const query = `SELECT * FROM boards;`;
+    const query = `
+    select boards.no, boards.title, boards.description, boards.in_date, boards.modify_date, boards.hit, users.name
+    from boards
+    left join users
+    on boards.user_no = users.no;`;
     return await mysql.query(query);
   }
 
