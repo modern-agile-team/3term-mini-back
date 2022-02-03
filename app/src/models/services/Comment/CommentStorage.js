@@ -39,7 +39,7 @@ class CommentStorage {
         return { success: false };
       }
     } catch (err) {
-      throw { msg: "댓글 작성 에러입니다, 서버 개발자에게 문의해주세요." };
+      throw { msg: "댓글 수정 에러입니다, 서버 개발자에게 문의해주세요." };
     }
   }
 

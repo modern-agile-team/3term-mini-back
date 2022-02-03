@@ -24,6 +24,22 @@ const process = {
   },
 
   // 1팀
+  hotBoard: async (req, res) => {
+    try {
+      const board = new Boards(req);
+      const response = await board.hotBoardAll(req);
+      if (response.success) {
+        logger.info(`GET /connect 200 ${response.success}`);
+        return res.status(200).json(response);
+      } else {
+        logger.error(`GET /connect 400  ${response.success}`);
+        return res.status(400).json(response);
+      }
+    } catch (err) {
+      throw res.status(500).json(err);
+    }
+  },
+
   readNonUserConnect: async (req, res) => {
     try {
       const board = new Boards(req);

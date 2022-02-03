@@ -30,19 +30,30 @@ class BoardStorage {
     }
   }
 
-  //1팀-------------------------------------------------------
+  //1팀------------------------------------------------------- 년월일 24시
+  static async selectHotBoards() {
+    try {
+      const query = `
+      SELECT no, title, DATE_FORMAT(in_date,'%y/%m/%d %H:%i') AS inDate
+      FROM boards 
+      ORDER BY (SELECT count(*) FROM comments WHERE comments.board_no = boards.no) DESC;
+      `;
+      const hotBoard = await mysql.query(query);
+
+      return { success: true, hotBoard: hotBoard[0] };
+    } catch (err) {
+      throw { err: "인기 게시글 조회 에러입니다. 서버 개발자에게 문의하세요." };
+    }
+  }
   static async selectToNonUser(boardNum) {
     try {
       const query = `
-      SELECT (SELECT count(*) from comments left join boards on boards.no = comments.board_no where boards.no = ?) as commentCount, boards.no, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate, users.nickname
-	    FROM boards
-      LEFT JOIN users
-      ON boards.user_no = users.no
-    	WHERE boards.no = ?`;
-      const selectResult = await mysql.query(query, [
-        boardNum.boardNo,
-        boardNum.boardNo,
-      ]);
+      SELECT boards.no, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate,(SELECT count(*) FROM comments where comments.board_no = boards.no) as comments_length, boards.hit, users.nickname
+			FROM boards
+		  LEFT JOIN users
+		  ON boards.user_no = users.no
+			WHERE boards.no = ?;`;
+      const selectResult = await mysql.query(query, [boardNum.boardNo]);
 
       if (selectResult[0].length) {
         return { success: true, data: selectResult[0] };
@@ -51,7 +62,7 @@ class BoardStorage {
       }
     } catch (err) {
       throw {
-        msg: "비회원 게시판 접속 기능 에러입니다, 서버 개발자에게 문의해주세요.",
+        msg: "비회원 게시글 접속 기능 에러입니다, 서버 개발자에게 문의해주세요.",
       };
     }
   }
@@ -74,7 +85,7 @@ class BoardStorage {
       }
     } catch (err) {
       throw {
-        msg: "회원 게시판 댓글 조회 기능 에러입니다, 서버 개발자에게 문의해주세요.",
+        msg: "회원 게시글 댓글 조회 기능 에러입니다, 서버 개발자에게 문의해주세요.",
       };
     }
   }
@@ -83,12 +94,12 @@ class BoardStorage {
     try {
       const { boardNo } = boardNum;
       const query = `
-      SELECT (SELECT count(*) from comments left join boards on boards.no = comments.board_no where boards.no = ?) as commentCount, users.no AS writerNo, hit, boards.no AS boardNo, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate, users.nickname
+      SELECT users.no AS writerNo, boards.no AS boardNo, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate, (SELECT count(*) FROM comments where comments.board_no = boards.no) as comments_length, hit, users.nickname
 	    FROM boards
       LEFT JOIN users
       ON boards.user_no = users.no
-    	WHERE boards.no = ?`;
-      const selectResult = await mysql.query(query, [boardNo, boardNo]);
+    	WHERE boards.no = ?;`;
+      const selectResult = await mysql.query(query, [boardNo]);
       if (selectResult[0].length) {
         return { success: true, boardInfo: selectResult[0] };
       } else {
@@ -118,7 +129,7 @@ class BoardStorage {
       }
     } catch (err) {
       throw {
-        err: "게시판 생성 기능 에러입니다, 서버 개발자에게 문의해주세요.",
+        err: "게시글 생성 기능 에러입니다, 서버 개발자에게 문의해주세요.",
       };
     }
   }
