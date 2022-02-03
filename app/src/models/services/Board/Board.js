@@ -55,7 +55,7 @@ class Board {
           comments: comment.comments,
           msg: "비회원: 게시글 접속 성공",
         };
-      } else if (!comment.success) {
+      } else if (board.success && !comment.success) {
         return {
           success: true,
           board: board.data[0],
@@ -68,7 +68,7 @@ class Board {
         };
       }
     } catch (err) {
-      return { err };
+      return { success: false, msg: err };
     }
   }
 
@@ -153,10 +153,10 @@ class Board {
       if (response.success) {
         return {
           success: true,
-          msg: "게시물 등록 성공",
+          msg: "게시글 등록 성공",
         };
       } else {
-        return { success: false, msg: "게시물 등록 실패" };
+        return { success: false, msg: "게시글 등록 실패" };
       }
     } catch (err) {
       return { success: false, msg: err };
@@ -180,11 +180,11 @@ class Board {
       const board = await BoardStorage.update(boardWrite);
 
       if (board.success) {
-        return { success: true, msg: "게시글 수정 완료" };
+        return { success: true, msg: "게시글 수정 성공" };
       } else {
         return {
           success: false,
-          msg: "게시글 수정 실패(작성자 X)",
+          msg: "게시글 수정 실패",
         };
       }
     } catch (err) {
