@@ -7,6 +7,7 @@ const process = {
   login: async (req, res) => {
     const user = new User(req.body);
     const response = await user.login();
+
     if (!response.success) {
       logger.error(`POST /login 401  ${response.success} ${response.err}`);
       return res.status(401).json(response);

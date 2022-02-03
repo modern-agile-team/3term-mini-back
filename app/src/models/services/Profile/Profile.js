@@ -16,14 +16,14 @@ class profile {
       if (profile.success) {
         return {
           success: true,
-          profile: profile.profile,
+          profile: profile.selectResult[0],
           msg: "프로필 불러오기에 성공했습니다.",
         };
       } else {
         return { success: false, msg: "해당 유저의 정보가 없습니다." };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      return { err: err.err };
     }
   }
 }
