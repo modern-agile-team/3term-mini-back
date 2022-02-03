@@ -30,7 +30,21 @@ class BoardStorage {
     }
   }
 
-  //1팀-------------------------------------------------------
+  //1팀------------------------------------------------------- 년월일 24시
+  static async selectHotBoards() {
+    try {
+      const query = `
+      SELECT no, title, DATE_FORMAT(in_date,'%y/%m/%d %H:%i') AS inDate
+      FROM boards 
+      ORDER BY (SELECT count(*) FROM comments WHERE comments.board_no = boards.no) DESC;
+      `;
+      const hotBoard = await mysql.query(query);
+
+      return { success: true, hotBoard: hotBoard[0] };
+    } catch (err) {
+      throw { err: "인기 게시글 조회 에러입니다. 서버 개발자에게 문의하세요." };
+    }
+  }
   static async selectToNonUser(boardNum) {
     try {
       const query = `
@@ -51,7 +65,7 @@ class BoardStorage {
       }
     } catch (err) {
       throw {
-        msg: "비회원 게시판 접속 기능 에러입니다, 서버 개발자에게 문의해주세요.",
+        err: "비회원 게시판 접속 기능 에러입니다, 서버 개발자에게 문의해주세요.",
       };
     }
   }
@@ -74,7 +88,7 @@ class BoardStorage {
       }
     } catch (err) {
       throw {
-        msg: "회원 게시판 댓글 조회 기능 에러입니다, 서버 개발자에게 문의해주세요.",
+        err: "회원 게시판 댓글 조회 기능 에러입니다, 서버 개발자에게 문의해주세요.",
       };
     }
   }

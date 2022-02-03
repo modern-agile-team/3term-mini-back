@@ -34,6 +34,14 @@ class Board {
   }
 
   //1팀
+  async hotBoardAll() {
+    try {
+      return await BoardStorage.selectHotBoards();
+    } catch (err) {
+      throw { success: false, err: err.err };
+    }
+  }
+
   async nonUserConnect() {
     try {
       const boardNo = this.params;
