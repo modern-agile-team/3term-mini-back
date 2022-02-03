@@ -3,7 +3,6 @@
 const logger = require("../../config/logger");
 const Board = require("../../models/services/Board/Board");
 const Boards = require("../../models/services/Board/Board");
-const logger = require("../../config/logger");
 const { connectBoard } = require("../../models/services/Board/BoardStorage");
 
 const process = {
