@@ -1,5 +1,6 @@
 "use strict";
 
+const logger = require("../../config/logger");
 const Board = require("../../models/services/Board/Board");
 const Boards = require("../../models/services/Board/Board");
 const { connectBoard } = require("../../models/services/Board/BoardStorage");
@@ -14,12 +15,32 @@ const process = {
   findOneByBoard: async (req, res) => {
     const board = new Boards(req);
     const response = await board.findOneByBoard(req);
-    return res.status(200).json(response);
+    if (!response.success) {
+      logger.error(
+        `SELECT /selectBoards 404  ${response.success} ${response.msg}`
+      );
+      return res.status(404).json(response);
+    } else {
+      logger.info(
+        `SELECT /selectBoards 204  ${response.success} ${response.msg}`
+      );
+      return res.status(202).json(response);
+    }
   },
   delete: async (req, res) => {
     const board = new Board(req);
     const response = await board.deleteBoard(req);
-    return res.status(204).json(response);
+    if (!response.success) {
+      logger.error(
+        `DELETE /deleteBoard 401  ${response.success} ${response.err}`
+      );
+      return res.status(204).json(response);
+    } else {
+      logger.info(
+        `DELETE /deleteBoard 204  ${response.success} ${response.msg}`
+      );
+      return res.status(404).json(response);
+    }
   },
 
   // 1팀

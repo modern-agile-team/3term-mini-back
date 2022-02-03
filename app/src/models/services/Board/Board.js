@@ -1,23 +1,42 @@
 "use strict";
 
+const UserStorage = require("../User/UserStorage");
 const BoardStorage = require("./BoardStorage");
 
 class Board {
   constructor(req) {
     this.params = req.params;
     this.body = req.body;
+    this.query = req.query;
   }
   //2팀
   async boardAll() {
     return await BoardStorage.findAllByBoards();
   }
   async findOneByBoard() {
-    const boardNo = this.body;
-
+    // const sort = this.query.sort;
+    let order = this.query.order;
+    const keyword = this.query.keyword;
+    if (order === "작성자") {
+      order = "users.name";
+    } else if (order === "제목") {
+      order = "boards.title";
+    }
+    // order === "작성자" ? (order = "users.name") : (order = "boards.title");
     try {
-      const response = await BoardStorage.findOneByBoardNo(no);
-      return response[0][0];
+      return await BoardStorage.findOneByBoardNo(
+        // sort,
+        order,
+        keyword
+      );
     } catch (err) {
+      // console.log(err);
+      if (err.msg.errno === 1054) {
+        return {
+          success: false,
+          msg: "정확한 주소를 입력해 주세요.",
+        };
+      }
       return { success: false, msg: err };
     }
   }
@@ -25,8 +44,16 @@ class Board {
     const no = req.params.no;
     try {
       const response = await BoardStorage.deleteBoard(no);
-      return response;
+      if (response.affectedRows === 1) {
+        return { success: true, msg: "게시글이 성공적으로 삭제되었습니다." };
+      }
     } catch (err) {
+      if (err.msg.errno === 1451) {
+        return {
+          success: false,
+          msg: "신고당한 게시글은 삭제할 수가 없습니다.",
+        };
+      }
       return { success: false, msg: err };
     }
   }

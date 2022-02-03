@@ -8,21 +8,33 @@ class BoardStorage {
     return await mysql.query(query);
   }
 
-  static async findOneByBoardNo(no) {
+  static async findOneByBoardNo(order, keyword) {
     try {
-      const query = `SELECT * FROM boards WHERE no = ?;`;
-      return await mysql.query(query, [no]);
+      const query = `
+      select boards.title, users.name,boards.in_date,boards.description
+      from boards 
+      left join users on boards.user_no = users.no 
+      where ${order} Like "%${keyword}%";`;
+      const searchedBoards = await mysql.query(query);
+      return searchedBoards[0];
     } catch (err) {
-      return { success: false, msg: err };
+      throw {
+        success: false,
+        msg: err,
+      };
     }
   }
 
   static async deleteBoard(no) {
     try {
-      const query = `DELETE FROM boards WHERE no=? ;`;
-      return await mysql.query(query, [no]);
+      const query = `
+      DELETE 
+      FROM boards 
+      WHERE no=? ;`;
+      const response = await mysql.query(query, [no]);
+      return response[0];
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, msg: err };
     }
   }
 
