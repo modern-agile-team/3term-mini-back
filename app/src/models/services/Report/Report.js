@@ -23,16 +23,17 @@ class report {
 
   async boardReportToSave() {
     const reportDetail = this.body;
-    const reportBlackConfirm = {
+    const reportConfirm = {
       desc: reportDetail.description,
       reportId: reportDetail.reportId,
     };
 
     // 게시글 신고창에서 체크박스 또는 신고 사유를 입력하지 않을 경우 발생하는 에러
-    if (!reportBlackConfirm.desc.length || reportBlackConfirm.reportId.length) {
-      const nullKeys = Object.keys(reportBlackConfirm)
+    if (!(reportConfirm.desc.length || reportConfirm.reportId.length)) {
+      console.log(reportConfirm);
+      const nullKeys = Object.keys(reportConfirm)
         .map((key) => {
-          if (!reportBlackConfirm[key.length]) return key;
+          if (!reportConfirm[key.length]) return key;
         })
         .join(" ");
       return {
@@ -58,16 +59,16 @@ class report {
   }
   async userReportToSave() {
     const reportDetail = this.body;
-    const reportBlackConfirm = {
+    const reportConfirm = {
       desc: reportDetail.description,
       reportId: reportDetail.reportId,
     };
 
     // 유저 신고창에서 체크박스 또는 신고 사유를 입력하지 않을 경우 발생하는 에러
-    if (!reportBlackConfirm.desc || reportBlackConfirm.reportId) {
-      const nullKeys = Object.keys(reportBlackConfirm)
+    if (!reportConfirm.desc || reportConfirm.reportId) {
+      const nullKeys = Object.keys(reportConfirm)
         .map((key) => {
-          if (!reportBlackConfirm[key].length) return key;
+          if (!reportConfirm[key].length) return key;
         })
         .join(" ");
       return {
