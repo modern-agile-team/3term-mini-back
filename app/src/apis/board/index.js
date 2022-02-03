@@ -11,6 +11,8 @@ router.post(`/findOneByBoard`, boardCtrl.process.findOneByBoard);
 router.delete(`/deleteBoard/:no`, boardCtrl.process.delete);
 
 // 1팀
+// 인기 게시글 조회
+router.get("/hotBoard", boardCtrl.process.hotBoard);
 
 // 비회원 게시글 접속
 router.get("/connect/:boardNo", boardCtrl.process.readNonUserConnect);

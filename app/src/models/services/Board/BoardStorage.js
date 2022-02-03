@@ -30,7 +30,21 @@ class BoardStorage {
     }
   }
 
-  //1팀-------------------------------------------------------
+  //1팀------------------------------------------------------- 년월일 24시
+  static async selectHotBoards() {
+    try {
+      const query = `
+      SELECT no, title, DATE_FORMAT(in_date,'%y/%m/%d %H:%i') AS inDate
+      FROM boards 
+      ORDER BY (SELECT count(*) FROM comments WHERE comments.board_no = boards.no) DESC;
+      `;
+      const hotBoard = await mysql.query(query);
+
+      return { success: true, hotBoard: hotBoard[0] };
+    } catch (err) {
+      throw { err: "인기 게시글 조회 에러입니다. 서버 개발자에게 문의하세요." };
+    }
+  }
   static async selectToNonUser(boardNum) {
     try {
       const query = `
