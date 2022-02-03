@@ -9,10 +9,14 @@ class Comment {
   }
 
   async commentToSave() {
-    try {
-      const cmtInfoToSave = this.body;
-      const comment = await CommentStorage.insertComment(cmtInfoToSave);
+    const cmtInfoToSave = this.body;
+    const comment = await CommentStorage.insertComment(cmtInfoToSave);
 
+    if (!cmtInfoToSave.description.length) {
+      return { success: false, msg: "댓글 내용을 입력해 주세요." };
+    }
+
+    try {
       if (comment.success) {
         return { success: true, msg: "댓글 작성이 완료되었습니다." };
       } else {

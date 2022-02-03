@@ -12,25 +12,51 @@ class BoardStorage {
     return await mysql.query(query);
   }
 
-  static async findOneByBoardNo(no) {
+  static async findOneByBoardNo(order, keyword) {
     try {
-      const query = `SELECT * FROM boards WHERE no = ?;`;
-      return await mysql.query(query, [no]);
+      const query = `
+      select boards.title, users.name,boards.in_date,boards.description
+      from boards 
+      left join users on boards.user_no = users.no 
+      where ${order} Like "%${keyword}%";`;
+      const searchedBoards = await mysql.query(query);
+      return searchedBoards[0];
     } catch (err) {
-      return { success: false, msg: err };
+      throw {
+        success: false,
+        msg: err,
+      };
     }
   }
 
   static async deleteBoard(no) {
     try {
-      const query = `DELETE FROM boards WHERE no=? ;`;
-      return await mysql.query(query, [no]);
+      const query = `
+      DELETE 
+      FROM boards 
+      WHERE no=? ;`;
+      const response = await mysql.query(query, [no]);
+      return response[0];
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, msg: err };
     }
   }
 
-  //1팀-------------------------------------------------------
+  //1팀------------------------------------------------------- 년월일 24시
+  static async selectHotBoards() {
+    try {
+      const query = `
+      SELECT no, title, DATE_FORMAT(in_date,'%y/%m/%d %H:%i') AS inDate
+      FROM boards 
+      ORDER BY (SELECT count(*) FROM comments WHERE comments.board_no = boards.no) DESC;
+      `;
+      const hotBoard = await mysql.query(query);
+
+      return { success: true, hotBoard: hotBoard[0] };
+    } catch (err) {
+      throw { err: "인기 게시글 조회 에러입니다. 서버 개발자에게 문의하세요." };
+    }
+  }
   static async selectToNonUser(boardNum) {
     try {
       const query = `
