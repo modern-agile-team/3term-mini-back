@@ -32,7 +32,7 @@ class report {
     if (!(reportConfirm.desc.length || reportConfirm.reportId.length)) {
       return {
         success: false,
-        msg: `${nullKeys}에 해당하는 값을 입력해 주세요.`,
+        msg: `신고 내용 입력 또는 체크박스를 선택해 주세요.`,
       };
     }
 
