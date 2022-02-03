@@ -3,6 +3,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
+const cors = require("cors");
 const logger = require("./src/config/logger");
 const accessLogStream = require("./src/config/log");
 
@@ -11,6 +12,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 // API 경로 지정
 const profile = require("./src/apis/profile");
