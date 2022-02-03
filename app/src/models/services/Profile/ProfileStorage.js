@@ -12,7 +12,7 @@ class ProfileStorage {
           ON users.no = boards.user_no 
           WHERE users.no=?`;
       const selectResult = await mysql.query(query, [userNo]);
-
+      console.log(selectResult[0]);
       if (selectResult[0].length) {
         return { success: true, selectResult: selectResult[0] };
       } else {
