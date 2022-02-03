@@ -10,7 +10,6 @@ const process = {
   all: async (req, res) => {
     const board = new Boards(req);
     const boards = await board.boardAll(req);
-    console.log(boards);
     return res.status(200).json(boards[0]);
   },
   findOneByBoard: async (req, res) => {

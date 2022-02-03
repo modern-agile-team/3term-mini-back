@@ -4,7 +4,11 @@ const mysql = require("../../../config/mysql");
 class BoardStorage {
   //2팀
   static async findAllByBoards() {
-    const query = `SELECT * FROM boards;`;
+    const query = `
+    select boards.no, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS inDate, DATE_FORMAT(boards.modify_date,'%m/%d %H:%i') AS modifyDate, (SELECT count(*) FROM comments where comments.board_no = boards.no) AS comments_length, boards.hit, users.nickname
+    from boards
+    left join users
+    on boards.user_no = users.no;`;
     return await mysql.query(query);
   }
 
