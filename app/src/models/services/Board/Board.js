@@ -57,7 +57,6 @@ class Board {
       return { success: false, msg: err };
     }
   }
-
   //1팀
   async hotBoardAll() {
     try {
@@ -93,7 +92,7 @@ class Board {
         };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      return { success: false, err };
     }
   }
 
