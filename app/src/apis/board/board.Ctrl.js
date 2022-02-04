@@ -14,14 +14,13 @@ const process = {
 
       return res.status(200).json(boards[0]);
     } catch (err) {
-      console.log(err);
       return res.status(500).json(err);
     }
   },
 
-  findOneByBoard: async (req, res) => {
+  SearchBoard: async (req, res) => {
     const board = new Boards(req);
-    const response = await board.findOneByBoard(req);
+    const response = await board.SearchBoard(req);
     if (!response.success) {
       logger.error(
         `SELECT /selectBoards 404  ${response.success} ${response.msg}`
