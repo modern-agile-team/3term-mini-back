@@ -1,24 +1,42 @@
 "use strict";
 
 const BoardStorage = require("./BoardStorage");
+const Blank = require("../../utils/blankConfirm");
 
 class Board {
   constructor(req) {
     this.params = req.params;
     this.body = req.body;
+    this.query = req.query;
   }
   //2팀
   async boardAll() {
     return await BoardStorage.findAllByBoards();
   }
   async findOneByBoard() {
-    const boardNo = this.body;
-
+    // const sort = this.query.sort;
+    let order = this.query.order;
+    const keyword = this.query.keyword;
+    if (order === "작성자") {
+      order = "users.name";
+    } else if (order === "제목") {
+      order = "boards.title";
+    }
+    // order === "작성자" ? (order = "users.name") : (order = "boards.title");
     try {
-      const response = await BoardStorage.findOneByBoardNo(no);
-
-      return response[0][0];
+      return await BoardStorage.findOneByBoardNo(
+        // sort,
+        order,
+        keyword
+      );
     } catch (err) {
+      // console.log(err);
+      if (err.msg.errno === 1054) {
+        return {
+          success: false,
+          msg: "정확한 주소를 입력해 주세요.",
+        };
+      }
       return { success: false, msg: err };
     }
   }
@@ -26,13 +44,19 @@ class Board {
     const no = req.params.no;
     try {
       const response = await BoardStorage.deleteBoard(no);
-
-      return response;
+      if (response.affectedRows === 1) {
+        return { success: true, msg: "게시글이 성공적으로 삭제되었습니다." };
+      }
     } catch (err) {
+      if (err.msg.errno === 1451) {
+        return {
+          success: false,
+          msg: "신고당한 게시글은 삭제할 수가 없습니다.",
+        };
+      }
       return { success: false, msg: err };
     }
   }
-
   //1팀
   async hotBoardAll() {
     try {
@@ -68,7 +92,7 @@ class Board {
         };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, err };
     }
   }
 
@@ -130,21 +154,19 @@ class Board {
         };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, msg: err };
     }
   }
 
   async create() {
     const boardWrite = this.body;
+    const boardBlank = Blank.boardConfirm(
+      boardWrite.title,
+      boardWrite.description
+    );
 
-    if (
-      !boardWrite.title.replace(/^\s+|\s+$/gm, "").length ||
-      !boardWrite.description.replace(/^\s+|\s+$/gm, "").length
-    ) {
-      return {
-        success: false,
-        msg: "제목 또는 내용을 입력해주세요",
-      };
+    if (!boardBlank.success) {
+      return { success: false, msg: boardBlank.msg };
     }
 
     try {
@@ -159,21 +181,19 @@ class Board {
         return { success: false, msg: "게시글 등록 실패" };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, msg: err };
     }
   }
 
   async update() {
     const boardWrite = this.body;
+    const boardBlank = Blank.boardConfirm(
+      boardWrite.title,
+      boardWrite.description
+    );
 
-    if (
-      !boardWrite.title.replace(/^\s+|\s+$/gm, "").length ||
-      !boardWrite.description.replace(/^\s+|\s+$/gm, "").length
-    ) {
-      return {
-        success: false,
-        msg: "제목 또는 내용을 입력해주세요.",
-      };
+    if (!boardBlank.success) {
+      return { success: false, msg: boardBlank.msg };
     }
 
     try {
@@ -188,7 +208,7 @@ class Board {
         };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, msg: err };
     }
   }
 
@@ -207,7 +227,7 @@ class Board {
         return { success: false, msg: "해당 게시글이 존재하지 않습니다." };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, msg: err };
     }
   }
 }

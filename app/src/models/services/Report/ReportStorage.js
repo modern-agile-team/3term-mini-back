@@ -15,7 +15,7 @@ class ReportStorage {
         return { success: false };
       }
     } catch (err) {
-      return { err: err };
+      throw { err: err };
     }
   }
   static async insertBoardReport(reportBoard) {

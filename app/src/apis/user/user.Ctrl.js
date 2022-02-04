@@ -27,6 +27,10 @@ const process = {
       logger.info(`POST /register 201 ${response.success} ${response.msg}`);
     return res.status(201).json(response);
   },
+  // checkBox: async (req, res) => {
+  //   const user = User(req.body);
+  //   const response = await user.checkBox();
+  // },
 };
 
 module.exports = { process };

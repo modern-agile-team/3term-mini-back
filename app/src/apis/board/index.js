@@ -7,7 +7,7 @@ const router = express.Router();
 
 //2팀
 router.get("/", boardCtrl.process.all);
-router.post(`/findOneByBoard`, boardCtrl.process.findOneByBoard);
+router.get(`/findOneByBoard`, boardCtrl.process.findOneByBoard);
 router.delete(`/deleteBoard/:no`, boardCtrl.process.delete);
 
 // 1팀
