@@ -1,7 +1,7 @@
 "use strict";
 
-const UserStorage = require("../User/UserStorage");
 const BoardStorage = require("./BoardStorage");
+const Blank = require("../../utils/blankConfirm");
 
 class Board {
   constructor(req) {
@@ -63,7 +63,6 @@ class Board {
       return { success: false, msg: err };
     }
   }
-
   //1팀
   async hotBoardAll() {
     try {
@@ -99,7 +98,7 @@ class Board {
         };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, err };
     }
   }
 
@@ -161,21 +160,19 @@ class Board {
         };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, msg: err };
     }
   }
 
   async create() {
     const boardWrite = this.body;
+    const boardBlank = Blank.boardConfirm(
+      boardWrite.title,
+      boardWrite.description
+    );
 
-    if (
-      !boardWrite.title.replace(/^\s+|\s+$/gm, "").length ||
-      !boardWrite.description.replace(/^\s+|\s+$/gm, "").length
-    ) {
-      return {
-        success: false,
-        msg: "제목 또는 내용을 입력해주세요",
-      };
+    if (!boardBlank.success) {
+      return { success: false, msg: boardBlank.msg };
     }
 
     try {
@@ -190,21 +187,19 @@ class Board {
         return { success: false, msg: "게시글 등록 실패" };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, msg: err };
     }
   }
 
   async update() {
     const boardWrite = this.body;
+    const boardBlank = Blank.boardConfirm(
+      boardWrite.title,
+      boardWrite.description
+    );
 
-    if (
-      !boardWrite.title.replace(/^\s+|\s+$/gm, "").length ||
-      !boardWrite.description.replace(/^\s+|\s+$/gm, "").length
-    ) {
-      return {
-        success: false,
-        msg: "제목 또는 내용을 입력해주세요.",
-      };
+    if (!boardBlank.success) {
+      return { success: false, msg: boardBlank.msg };
     }
 
     try {
@@ -219,7 +214,7 @@ class Board {
         };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, msg: err };
     }
   }
 
@@ -238,7 +233,7 @@ class Board {
         return { success: false, msg: "해당 게시글이 존재하지 않습니다." };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, msg: err };
     }
   }
 }

@@ -1,6 +1,7 @@
 "use strict";
 
 const ReportStorage = require("./ReportStorage");
+const Blank = require("../../utils/blankConfirm");
 
 class report {
   constructor(req) {
@@ -17,22 +18,21 @@ class report {
         return { success: false, msg: "카테고리 정보 조회에 실패했습니다." };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, msg: err };
     }
   }
 
   async boardReportToSave() {
     const reportDetail = this.body;
-    const reportConfirm = {
-      desc: reportDetail.description,
-      reportId: reportDetail.reportId,
-    };
-
+    const reportBlank = Blank.reportConfirm(
+      reportDetail.reportId,
+      reportDetail.description
+    );
     // 게시글 신고창에서 체크박스 또는 신고 사유를 입력하지 않을 경우 발생하는 에러
-    if (!(reportConfirm.desc.length || reportConfirm.reportId.length)) {
+    if (!reportBlank.success) {
       return {
         success: false,
-        msg: `신고 내용 입력 또는 체크박스를 선택해 주세요.`,
+        msg: reportBlank.msg,
       };
     }
 
@@ -48,18 +48,15 @@ class report {
         return { success: false, msg: "게시글 신고 접수에 실패했습니다." };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, msg: err };
     }
   }
+
   async userReportToSave() {
     const reportDetail = this.body;
-    const reportConfirm = {
-      desc: reportDetail.description,
-      reportId: reportDetail.reportId,
-    };
-
+    const reportConfirm = Blank.descConfirm(reportDetail.description);
     // 유저 신고창에서 체크박스 또는 신고 사유를 입력하지 않을 경우 발생하는 에러
-    if (!(reportConfirm.desc.length || reportConfirm.reportId.length)) {
+    if (!reportDetail.reportId.length || !reportConfirm.desc.length) {
       return {
         success: false,
         msg: `신고 내용 입력 또는 체크박스를 선택해 주세요.`,
@@ -78,7 +75,7 @@ class report {
         return { success: false, msg: "이용자 신고 접수에 실패했습니다." };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, msg: err };
     }
   }
 }
