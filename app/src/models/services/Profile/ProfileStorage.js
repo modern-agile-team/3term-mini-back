@@ -6,7 +6,7 @@ class ProfileStorage {
   static async selectProfile(profileUserNo) {
     try {
       const { userNo } = profileUserNo;
-      const query = `SELECT users.name, users.nickname, users.mail, 
+      const query = `SELECT users.name, users.nickname, users.mail, users.id
       (SELECT COUNT(*) FROM boards WHERE users.no = boards.no) AS boards 
       FROM users WHERE users.no = ?;`;
       const selectResult = await mysql.query(query, [userNo]);
