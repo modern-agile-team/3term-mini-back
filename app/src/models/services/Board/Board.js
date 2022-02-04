@@ -1,7 +1,7 @@
 "use strict";
 
-const UserStorage = require("../User/UserStorage");
 const BoardStorage = require("./BoardStorage");
+const Blank = require("../../utils/blankConfirm");
 
 class Board {
   constructor(req) {
@@ -160,15 +160,13 @@ class Board {
 
   async create() {
     const boardWrite = this.body;
+    const boardBlank = Blank.boardConfirm(
+      boardWrite.title,
+      boardWrite.description
+    );
 
-    if (
-      !boardWrite.title.replace(/^\s+|\s+$/gm, "").length ||
-      !boardWrite.description.replace(/^\s+|\s+$/gm, "").length
-    ) {
-      return {
-        success: false,
-        msg: "제목 또는 내용을 입력해주세요",
-      };
+    if (!boardBlank.success) {
+      return { success: false, msg: boardBlank.msg };
     }
 
     try {
@@ -189,15 +187,13 @@ class Board {
 
   async update() {
     const boardWrite = this.body;
+    const boardBlank = Blank.boardConfirm(
+      boardWrite.title,
+      boardWrite.description
+    );
 
-    if (
-      !boardWrite.title.replace(/^\s+|\s+$/gm, "").length ||
-      !boardWrite.description.replace(/^\s+|\s+$/gm, "").length
-    ) {
-      return {
-        success: false,
-        msg: "제목 또는 내용을 입력해주세요.",
-      };
+    if (!boardBlank.success) {
+      return { success: false, msg: boardBlank.msg };
     }
 
     try {
