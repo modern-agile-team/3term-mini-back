@@ -4,12 +4,18 @@ const mysql = require("../../../config/mysql");
 class BoardStorage {
   //2팀
   static async findAllByBoards() {
-    const query = `
+    try {
+      const query = `
     select boards.no, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS inDate, DATE_FORMAT(boards.modify_date,'%m/%d %H:%i') AS modifyDate, (SELECT count(*) FROM comments where comments.board_no = boards.no) AS comments_length, boards.hit, users.nickname
     from boards
     left join users
     on boards.user_no = users.no;`;
-    return await mysql.query(query);
+      return await mysql.query(query);
+    } catch (err) {
+      throw {
+        msg: "게시글 전체조회 오류입니다. 서버개발자에게 문의해주세요.",
+      };
+    }
   }
 
   static async findOneByBoardNo(order, keyword) {
@@ -20,7 +26,7 @@ class BoardStorage {
       left join users on boards.user_no = users.no 
       where ${order} Like "%${keyword}%";`;
       const searchedBoards = await mysql.query(query);
-      return searchedBoards[0];
+      return { success: true, data: searchedBoards[0] };
     } catch (err) {
       throw {
         success: false,

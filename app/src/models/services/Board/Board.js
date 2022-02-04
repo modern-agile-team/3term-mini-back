@@ -11,10 +11,13 @@ class Board {
   }
   //2팀
   async boardAll() {
-    return await BoardStorage.findAllByBoards();
+    try {
+      return await BoardStorage.findAllByBoards();
+    } catch (err) {
+      throw { success: false, msg: err.msg };
+    }
   }
   async findOneByBoard() {
-    // const sort = this.query.sort;
     let order = this.query.order;
     const keyword = this.query.keyword;
     if (order === "작성자") {
@@ -22,15 +25,18 @@ class Board {
     } else if (order === "제목") {
       order = "boards.title";
     }
-    // order === "작성자" ? (order = "users.name") : (order = "boards.title");
     try {
-      return await BoardStorage.findOneByBoardNo(
-        // sort,
+      const searchedBoards = await BoardStorage.findOneByBoardNo(
         order,
         keyword
       );
+      // console.log(searchedBoards);
+      return {
+        success: true,
+        data: searchedBoards.data,
+        msg: "정상적으로 상세조회가 이루어졌습니다.",
+      };
     } catch (err) {
-      // console.log(err);
       if (err.msg.errno === 1054) {
         return {
           success: false,
