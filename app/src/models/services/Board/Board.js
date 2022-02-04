@@ -57,7 +57,6 @@ class Board {
       return { success: false, msg: err };
     }
   }
-
   //1팀
   async hotBoardAll() {
     try {
@@ -93,7 +92,7 @@ class Board {
         };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, err };
     }
   }
 
@@ -155,7 +154,7 @@ class Board {
         };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, msg: err };
     }
   }
 
@@ -182,7 +181,7 @@ class Board {
         return { success: false, msg: "게시글 등록 실패" };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, msg: err };
     }
   }
 
@@ -209,7 +208,7 @@ class Board {
         };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, msg: err };
     }
   }
 
@@ -228,7 +227,7 @@ class Board {
         return { success: false, msg: "해당 게시글이 존재하지 않습니다." };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, msg: err };
     }
   }
 }
