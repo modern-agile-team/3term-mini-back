@@ -14,21 +14,11 @@ class UserStorage {
         return { success: false };
       }
     } catch (err) {
-      throw err;
+      throw {
+        msg: "로그인 관련 서버에러입니다. 서버 개발자에게 문의하세요.",
+      };
     }
   }
-
-  // getQuery(type) {
-  //   switch (type) {
-  //     case (type = "id"):
-  //       return "SELECT id FROM users WHERE  id = ?;";
-  //     case (type = "nickname"):
-  //       return "SELECT nickname FROM users WHERE  nickname = ?;";
-  //     case (type = "mail"):
-  //       return "SELECT mail FROM users WHERE  mail = ?;";
-  //   }
-  // }
-
   static async judgeDuplicateId(value) {
     const query = "SELECT id FROM users WHERE  id = ?;";
     try {
@@ -93,15 +83,10 @@ class UserStorage {
         return { success: false };
       }
     } catch (err) {
-      throw err;
+      throw {
+        msg: "회원가입 관련 서버에러입니다. 서버 개발자에게 문의하세요.",
+      };
     }
   }
-  // static async agreementCheckBox(checkArr) {
-  //   try {
-  //     const query = `INSERT INTO `;
-  //   } catch (err) {
-  //     throw err;
-  //   }
-  // }
 }
 module.exports = UserStorage;

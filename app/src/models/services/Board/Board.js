@@ -17,7 +17,7 @@ class Board {
       throw { success: false, msg: err.msg };
     }
   }
-  async findOneByBoard() {
+  async SearchBoard() {
     let order = this.query.order;
     const keyword = this.query.keyword;
     if (order === "작성자") {
@@ -26,11 +26,7 @@ class Board {
       order = "boards.title";
     }
     try {
-      const searchedBoards = await BoardStorage.findOneByBoardNo(
-        order,
-        keyword
-      );
-      // console.log(searchedBoards);
+      const searchedBoards = await BoardStorage.SearchBoardNo(order, keyword);
       return {
         success: true,
         data: searchedBoards.data,
