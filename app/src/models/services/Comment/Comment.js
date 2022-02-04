@@ -1,6 +1,7 @@
 "use strict";
 
 const CommentStorage = require("./CommentStorage");
+const blank = require("../../utils/blankConfirm");
 
 class Comment {
   constructor(req) {
@@ -11,9 +12,10 @@ class Comment {
   async commentToSave() {
     const cmtInfoToSave = this.body;
     const comment = await CommentStorage.insertComment(cmtInfoToSave);
+    const commentBlank = blank.descConfirm(cmtInfoToSave.description);
 
-    if (!cmtInfoToSave.description.length) {
-      return { success: false, msg: "댓글 내용을 입력해 주세요." };
+    if (!commentBlank.success) {
+      return { success: false, msg: commentBlank.msg };
     }
 
     try {
