@@ -18,7 +18,7 @@ class BoardStorage {
     }
   }
 
-  static async findOneByBoardNo(order, keyword) {
+  static async SearchBoardNo(order, keyword) {
     try {
       const query = `
       select boards.title, users.name,boards.in_date,boards.description
