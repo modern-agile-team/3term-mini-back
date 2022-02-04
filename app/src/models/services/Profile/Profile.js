@@ -23,7 +23,7 @@ class profile {
         return { success: false, msg: "해당 유저의 정보가 없습니다." };
       }
     } catch (err) {
-      return { err: err.err };
+      throw { err: err.err };
     }
   }
 }

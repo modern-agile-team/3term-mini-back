@@ -17,7 +17,7 @@ class report {
         return { success: false, msg: "카테고리 정보 조회에 실패했습니다." };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, msg: err };
     }
   }
 
@@ -48,7 +48,7 @@ class report {
         return { success: false, msg: "게시글 신고 접수에 실패했습니다." };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, msg: err };
     }
   }
   async userReportToSave() {
@@ -78,7 +78,7 @@ class report {
         return { success: false, msg: "이용자 신고 접수에 실패했습니다." };
       }
     } catch (err) {
-      return { success: false, msg: err };
+      throw { success: false, msg: err };
     }
   }
 }
