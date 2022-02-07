@@ -11,7 +11,6 @@ class User {
       // const { id, password } = await UserStorage.getUserInfo(client.id);
       const userInfo = await UserStorage.getUserInfo(client.id);
       const trueUserInfo = userInfo.info;
-      console.log(trueUserInfo);
       if (trueUserInfo) {
         if (trueUserInfo.password === client.password) {
           return { success: true, msg: "로그인 성공" };
@@ -21,7 +20,7 @@ class User {
 
       return { success: false, msg: "존재하지 않는 아이디입니다." };
     } catch (err) {
-      throw { success: false, err };
+      throw { success: false, msg: err.msg };
     }
   }
   async register() {
@@ -83,7 +82,7 @@ class User {
         ? { success: false, msg: `${duplicateKeys}는 중복된 값입니다` }
         : await UserStorage.save(client);
     } catch (err) {
-      throw { success: false, err };
+      throw { success: false, msg: err.msg };
     }
   }
   // async checkBox() {
