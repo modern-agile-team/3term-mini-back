@@ -1,5 +1,6 @@
 "use strict";
 
+const { json } = require("express");
 const logger = require("../../config/logger");
 const Board = require("../../models/services/Board/Board");
 const Boards = require("../../models/services/Board/Board");
@@ -8,13 +9,19 @@ const { connectBoard } = require("../../models/services/Board/BoardStorage");
 const process = {
   //2팀
   all: async (req, res) => {
-    const board = new Boards(req);
-    const boards = await board.boardAll(req);
-    return res.status(200).json(boards[0]);
+    try {
+      const board = new Boards(req);
+      const boards = await board.boardAll(req);
+
+      return res.status(200).json(boards[0]);
+    } catch (err) {
+      return res.status(500).json(err);
+    }
   },
-  findOneByBoard: async (req, res) => {
+
+  SearchBoard: async (req, res) => {
     const board = new Boards(req);
-    const response = await board.findOneByBoard(req);
+    const response = await board.SearchBoard(req);
     if (!response.success) {
       logger.error(
         `SELECT /selectBoards 404  ${response.success} ${response.msg}`
@@ -24,7 +31,7 @@ const process = {
       logger.info(
         `SELECT /selectBoards 204  ${response.success} ${response.msg}`
       );
-      return res.status(202).json(response);
+      return res.status(202).json(response.data);
     }
   },
   delete: async (req, res) => {
@@ -34,16 +41,32 @@ const process = {
       logger.error(
         `DELETE /deleteBoard 401  ${response.success} ${response.err}`
       );
-      return res.status(204).json(response);
+      return res.status(401).json(response);
     } else {
       logger.info(
         `DELETE /deleteBoard 204  ${response.success} ${response.msg}`
       );
-      return res.status(404).json(response);
+      return res.status(204).json(response);
     }
   },
 
   // 1팀
+  orderBoard: async (req, res) => {
+    try {
+      const board = new Boards(req);
+      const response = await board.orderBoard(req);
+      if (response.success) {
+        logger.info(`GET /connect 200 ${response.success}`);
+        return res.status(200).json(response);
+      } else {
+        logger.error(`GET /connect 400  ${response.success}`);
+        return res.status(400).json(response);
+      }
+    } catch (err) {
+      return res.json(err);
+    }
+  },
+
   hotBoard: async (req, res) => {
     try {
       const board = new Boards(req);
