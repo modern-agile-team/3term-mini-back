@@ -12,6 +12,9 @@ router.get(`/searchBoard`, boardCtrl.process.SearchBoard);
 router.delete(`/deleteBoard/:no`, boardCtrl.process.delete);
 
 // 1팀
+// 게시물 최신순 오래된순
+router.get(`/sort`, boardCtrl.process.orderBoard);
+
 // 인기 게시글 조회
 router.get("/hotBoard", boardCtrl.process.hotBoard);
 

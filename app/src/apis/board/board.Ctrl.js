@@ -1,5 +1,6 @@
 "use strict";
 
+const { json } = require("express");
 const logger = require("../../config/logger");
 const Board = require("../../models/services/Board/Board");
 const Boards = require("../../models/services/Board/Board");
@@ -50,6 +51,22 @@ const process = {
   },
 
   // 1팀
+  orderBoard: async (req, res) => {
+    try {
+      const board = new Boards(req);
+      const response = await board.orderBoard(req);
+      if (response.success) {
+        logger.info(`GET /connect 200 ${response.success}`);
+        return res.status(200).json(response);
+      } else {
+        logger.error(`GET /connect 400  ${response.success}`);
+        return res.status(400).json(response);
+      }
+    } catch (err) {
+      return res.json(err);
+    }
+  },
+
   hotBoard: async (req, res) => {
     try {
       const board = new Boards(req);
