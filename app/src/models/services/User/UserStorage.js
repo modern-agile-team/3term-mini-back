@@ -22,7 +22,6 @@ class UserStorage {
   static async judgeDuplicateId(value) {
     const query = "SELECT id FROM users WHERE  id = ?;";
     try {
-      console.log(query);
       const existId = await db.query(query, [value]);
 
       if (existId[0].length) {
@@ -68,14 +67,16 @@ class UserStorage {
   static async save(userInfo) {
     try {
       const query = `
-      INSERT INTO users(id, password, mail, nickname, name) 
-      VALUES(?, ?, ?, ?, ?);`;
+      INSERT INTO users(id, password, mail, nickname, name, year_no, school_no) 
+      VALUES(?, ?, ?, ?, ?,?,?);`;
       const isSave = await db.query(query, [
         userInfo.id,
         userInfo.password,
         userInfo.mail,
         userInfo.nickname,
         userInfo.name,
+        userInfo.year,
+        userInfo.school,
       ]);
       if (isSave[0].affectedRows) {
         return { success: true };

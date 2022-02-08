@@ -10,7 +10,7 @@ const process = {
       const response = await user.login();
       if (!response.success) {
         logger.error(`POST /login 401  ${response.success} ${response.msg}`);
-        return res.status(401).json(response);
+        return res.status(400).json(response);
       } else {
         logger.info(`POST /login 201 ${response.success} ${response.msg}`);
         return res.status(201).json(response);
