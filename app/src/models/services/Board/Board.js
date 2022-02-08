@@ -64,6 +64,21 @@ class Board {
     }
   }
   //1팀
+  async orderBoard() {
+    try {
+      const order = this.query.order;
+      const result = await BoardStorage.orderBoard(order);
+
+      if (result.order.length) {
+        return { success: true, order: result.order };
+      } else {
+        return { success: false, msg: "정렬 실패" };
+      }
+    } catch (err) {
+      throw { success: false, err: err.err };
+    }
+  }
+
   async hotBoardAll() {
     try {
       return await BoardStorage.selectHotBoards();
