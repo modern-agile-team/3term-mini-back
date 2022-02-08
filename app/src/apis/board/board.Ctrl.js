@@ -1,5 +1,6 @@
 "use strict";
 
+const { json } = require("express");
 const logger = require("../../config/logger");
 const Board = require("../../models/services/Board/Board");
 const Boards = require("../../models/services/Board/Board");
@@ -19,37 +20,62 @@ const process = {
   },
 
   SearchBoard: async (req, res) => {
-    const board = new Boards(req);
-    const response = await board.SearchBoard(req);
-    if (!response.success) {
-      logger.error(
-        `SELECT /selectBoards 404  ${response.success} ${response.msg}`
-      );
-      return res.status(404).json(response);
-    } else {
-      logger.info(
-        `SELECT /selectBoards 204  ${response.success} ${response.msg}`
-      );
-      return res.status(202).json(response.data);
+    try {
+      const board = new Boards(req);
+      const response = await board.SearchBoard(req);
+      if (!response.success) {
+        logger.error(
+          `SELECT /selectBoards 404  ${response.success} ${response.msg}`
+        );
+        return res.status(404).json(response);
+      } else {
+        logger.info(
+          `SELECT /selectBoards 200  ${response.success} ${response.msg}`
+        );
+        return res.status(200).json(response.data);
+      }
+    } catch (err) {
+      return res.status(500).json(err);
     }
   },
+
   delete: async (req, res) => {
-    const board = new Board(req);
-    const response = await board.deleteBoard(req);
-    if (!response.success) {
-      logger.error(
-        `DELETE /deleteBoard 401  ${response.success} ${response.err}`
-      );
-      return res.status(401).json(response);
-    } else {
-      logger.info(
-        `DELETE /deleteBoard 204  ${response.success} ${response.msg}`
-      );
-      return res.status(204).json(response);
+    try {
+      const board = new Board(req);
+      const response = await board.deleteBoard(req);
+      if (!response.success) {
+        logger.error(
+          `DELETE /deleteBoard 403  ${response.success} ${response.msg}`
+        );
+        return res.status(403).json(response);
+      } else {
+        logger.info(
+          `DELETE /deleteBoard 200  ${response.success} ${response.msg}`
+        );
+        return res.status(200).json(response);
+      }
+    } catch (err) {
+      return res.status(500).json(err);
     }
   },
 
   // 1팀
+  orderBoard: async (req, res) => {
+    try {
+      const board = new Boards(req);
+      const response = await board.orderBoard(req);
+      if (response.success) {
+        logger.info(`GET /connect 200 ${response.success}`);
+        return res.status(200).json(response);
+      } else {
+        logger.error(`GET /connect 400  ${response.success}`);
+        return res.status(400).json(response);
+      }
+    } catch (err) {
+      return res.json(err);
+    }
+  },
+
   hotBoard: async (req, res) => {
     try {
       const board = new Boards(req);

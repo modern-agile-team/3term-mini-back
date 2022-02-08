@@ -23,10 +23,10 @@ const comment = require("./src/apis/comment");
 
 app.use(morgan("tiny", { stream: logger.stream }));
 // API 연결
-app.use("/profile", profile);
-app.use("/board", board);
-app.use("/user", user);
-app.use("/report", report);
-app.use("/comment", comment);
+app.use("/moae/profile", profile);
+app.use("/moae/board", board);
+app.use("/moae/user", user);
+app.use("/moae/report", report);
+app.use("/moae/comment", comment);
 
 module.exports = app;

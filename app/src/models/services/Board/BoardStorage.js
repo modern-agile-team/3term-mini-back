@@ -6,7 +6,7 @@ class BoardStorage {
   static async findAllByBoards() {
     try {
       const query = `
-    select boards.no, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS inDate, DATE_FORMAT(boards.modify_date,'%m/%d %H:%i') AS modifyDate, (SELECT count(*) FROM comments where comments.board_no = boards.no) AS comments_length, boards.hit, users.nickname
+    select boards.no, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS inDate, DATE_FORMAT(boards.modify_date,'%m/%d %H:%i') AS modifyDate, (SELECT count(*) FROM comments where comments.board_no = boards.no) AS comments_length, boards.hit, users.nickname, users.id
     from boards
     left join users
     on boards.user_no = users.no;`;
@@ -49,6 +49,23 @@ class BoardStorage {
   }
 
   //1팀------------------------------------------------------- 년월일 24시
+  static async orderBoard(order) {
+    try {
+      const query = `
+      select boards.no, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS inDate, DATE_FORMAT(boards.modify_date,'%m/%d %H:%i') AS modifyDate, (SELECT count(*) FROM comments where comments.board_no = boards.no) AS comments_length, boards.hit, users.nickname
+      from boards
+      left join users
+      on boards.user_no = users.no
+      order by boards.in_date ${order};`;
+      const orderResult = await mysql.query(query);
+
+      return { success: true, order: orderResult[0] };
+    } catch (err) {
+      throw {
+        msg: "전체 게시글 정렬 조회 에러입니다. 서버 개발자에게 문의하세요.",
+      };
+    }
+  }
   static async selectHotBoards() {
     try {
       const query = `
@@ -60,7 +77,7 @@ class BoardStorage {
 
       return { success: true, hotBoard: hotBoard[0] };
     } catch (err) {
-      throw { err: "인기 게시글 조회 에러입니다. 서버 개발자에게 문의하세요." };
+      throw { msg: "인기 게시글 조회 에러입니다. 서버 개발자에게 문의하세요." };
     }
   }
   static async selectToNonUser(boardNum) {
