@@ -25,6 +25,7 @@ class User {
   }
   async register() {
     const client = this.body;
+    console.log(client);
     //id,psword,이름,이 있는지 부터 확인
     const clientObj = {
       id: client.id,
@@ -71,13 +72,11 @@ class User {
         nickname: duplicateNickname.success,
         mail: duplicateMail.success,
       };
-      console.log(duplicationObj);
       //id,nickname,mail이 중복이 있는 녀석들은 DB에서 가져올때 null이 아님으로 null이 아닌 중복이 있는 놈들만 배열로 만들어 준것임
       const duplicateKeys = Object.keys(duplicationObj).filter((key) => {
         if (duplicationObj[key]) return true;
         return false;
       });
-      console.log(duplicateKeys);
       return duplicateKeys.length
         ? { success: false, msg: `${duplicateKeys}는 중복된 값입니다` }
         : await UserStorage.save(client);
@@ -85,31 +84,6 @@ class User {
       throw { success: false, msg: err.msg };
     }
   }
-  // async checkBox() {
-  //   //body에 배열이 실려서 들어옴
-  //   const checkArr = this.body;
-  //   const checkArr = {
-  //     selectAll: checkArr.selectAll,
-  //     nece: checkArr.necessary,
-  //     sel: checkArr.select,
-  //     auth: checkArr.auth,
-  //     age: checkArr.ageGrade,
-  //   };
-
-  //   if (!checkArr.nece) {
-  //     return {
-  //       success: false,
-  //       msg: `필수사항을 모두 체크해주셔야 회원가입이 가능합니다.`,
-  //     };
-  //   }
-
-  //   // 체크박스에 무엇을 체크 해주었는지 확인하기 위해 필수사항에 대한 객체를 만들어줌
-  //   try {
-  //     const response = await UserStorage.agreementCheckBox(checkArr);
-  //   } catch (err) {
-  //     throw { success: false, err };
-  //   }
-  // }
 }
 
 module.exports = User;
