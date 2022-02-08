@@ -25,7 +25,6 @@ class User {
   }
   async register() {
     const client = this.body;
-    console.log(client);
     //id,psword,이름,이 있는지 부터 확인
     const clientObj = {
       id: client.id,

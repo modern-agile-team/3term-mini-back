@@ -22,7 +22,6 @@ class UserStorage {
   static async judgeDuplicateId(value) {
     const query = "SELECT id FROM users WHERE  id = ?;";
     try {
-      console.log(query);
       const existId = await db.query(query, [value]);
 
       if (existId[0].length) {
