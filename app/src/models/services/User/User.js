@@ -61,13 +61,14 @@ class User {
     //id,nickname,mail 중복 시 다른 id로 입력 할 수 있도록.
     try {
       const duplicatedId = await UserStorage.isDuplicatedId(client.id);
+      console.log(duplicatedId);
       const duplicateNickname = await UserStorage.judgeDuplicateNickname(
         client.nickname
       );
       const duplicateMail = await UserStorage.judgeDuplicateMail(client.mail);
 
       const duplicationObj = {
-        id: duplicatedId.success,
+        id: duplicatedId,
         nickname: duplicateNickname.success,
         mail: duplicateMail.success,
       };
