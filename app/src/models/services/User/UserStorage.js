@@ -76,7 +76,7 @@ class UserStorage {
         userInfo.school,
       ]);
       if (isSave[0].affectedRows) {
-        return { success: true };
+        return { success: true, msg: "회원가입이 정상적으로 수행되었습니다." };
       } else {
         return { success: false };
       }

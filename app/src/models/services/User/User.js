@@ -67,7 +67,7 @@ class User {
       const duplicateMail = await UserStorage.judgeDuplicateMail(client.mail);
 
       const duplicationObj = {
-        id: duplicatedId.success,
+        id: duplicatedId,
         nickname: duplicateNickname.success,
         mail: duplicateMail.success,
       };
