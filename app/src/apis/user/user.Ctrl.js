@@ -31,8 +31,8 @@ const process = {
       if (!response.success) {
         logger.error(`POST /register 401 ${response.success} ${response.msg}`);
         return res.status(401).json(response);
-      } else console.log(response);
-      logger.info(`POST /register 201 ${response.success} ${response.msg}`);
+      } else
+        logger.info(`POST /register 201 ${response.success} ${response.msg}`);
       return res.status(201).json(response);
     } catch (err) {
       return res.status(500).json(err);
