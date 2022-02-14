@@ -19,21 +19,19 @@ class UserStorage {
       };
     }
   }
-  static async judgeDuplicateId(value) {
+
+  static async isDuplicatedId(id) {
+    // if (typeof id !== "string") throw new TypeError();
     const query = "SELECT id FROM users WHERE  id = ?;";
     try {
-      const existId = await db.query(query, [value]);
-
-      if (existId[0].length) {
-        return { success: true };
-      } else {
-        return { success: false };
-      }
+      const existedId = await db.query(query, [id]);
+      return !!existedId[0].length;
       //existID가 메타 데이터이기 때문에 existId[0]을 return 해줌으로써 User에 넘겨 줄 데이터는 client.id에 해당하는 열을 객체로 보낸 형태가 됨
     } catch (err) {
       throw err;
     }
   }
+
   static async judgeDuplicateNickname(value) {
     try {
       const query = "SELECT nickname FROM users WHERE  nickname =?;";
@@ -67,14 +65,13 @@ class UserStorage {
   static async save(userInfo) {
     try {
       const query = `
-      INSERT INTO users(id, password, mail, nickname, name, year_no, school_no) 
-      VALUES(?, ?, ?, ?, ?,?,?);`;
+      INSERT INTO users(id, password, mail, nickname, year_no, school_no) 
+      VALUES(?, ?, ?, ?, ?, ?);`;
       const isSave = await db.query(query, [
         userInfo.id,
         userInfo.password,
         userInfo.mail,
         userInfo.nickname,
-        userInfo.name,
         userInfo.year,
         userInfo.school,
       ]);
@@ -84,6 +81,7 @@ class UserStorage {
         return { success: false };
       }
     } catch (err) {
+      console.log(err);
       throw {
         msg: "회원가입 관련 서버에러입니다. 서버 개발자에게 문의하세요.",
       };

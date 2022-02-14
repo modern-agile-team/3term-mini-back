@@ -29,8 +29,8 @@ class User {
     const clientObj = {
       id: client.id,
       password: client.password,
-      name: client.name,
-      confirm: client.passwordConfirm,
+      // name: client.name,
+      // confirm: client.passwordConfirm,
     };
 
     // if(!(client.id && client.psword && client.name&&client.pswordconfirm)) {
@@ -47,27 +47,27 @@ class User {
         msg: `${nullKeys}에 해당하는 값을 입력해주세요`,
       };
     //password === passwordconfirm확인하는 작업
-    if (!(client.password === client.passwordConfirm)) {
-      return {
-        success: false,
-        msg: "비밀번호와 비밀번호 확인이 서로 다릅니다.",
-      };
-    }
+    // if (!(client.password === client.passwordConfirm)) {
+    //   return {
+    //     success: false,
+    //     msg: "비밀번호와 비밀번호 확인이 서로 다릅니다.",
+    //   };
+    // }
     //body에 nickname값이 없다면 id값을 nickname으로 지정해줌
     if (!client.nickname) {
       client.nickname = client.id;
     }
 
-    //id,nickname,mail 중복 시 다른 id로 입력 할 수 있도록.s
+    //id,nickname,mail 중복 시 다른 id로 입력 할 수 있도록.
     try {
-      const duplicateId = await UserStorage.judgeDuplicateId(client.id);
+      const duplicatedId = await UserStorage.isDuplicatedId(client.id);
       const duplicateNickname = await UserStorage.judgeDuplicateNickname(
         client.nickname
       );
       const duplicateMail = await UserStorage.judgeDuplicateMail(client.mail);
 
       const duplicationObj = {
-        id: duplicateId.success,
+        id: duplicatedId.success,
         nickname: duplicateNickname.success,
         mail: duplicateMail.success,
       };
