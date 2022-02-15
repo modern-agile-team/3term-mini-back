@@ -6,7 +6,7 @@ const db = require("../../../config/mysql");
 class UserStorage {
   static async getUserInfo(id) {
     try {
-      const query = "SELECT id,password FROM users WHERE id = ?;";
+      const query = "SELECT id,password,name FROM users WHERE id = ?;";
       const existId = await db.query(query, [id]);
       if (existId[0].length) {
         return { success: true, info: existId[0][0] };
@@ -62,18 +62,44 @@ class UserStorage {
     }
   }
 
+  static async getUserCheck(dataBox) {
+    try {
+      const { id, essential, choice } = dataBox;
+      if (essential === false || essential === undefined) {
+        return {
+          success: false,
+          msg: "약관동의의 필수적인 요소가 등록되지 않았습니다.",
+        };
+      }
+      const query2 = `SELECT * FROM users WHERE id = ?;`;
+      const join = await db.query(query2, [id]);
+      const query = `
+      INSERT INTO agreement (user_no, essential, choice)
+      VALUES(?, ?, ?);`;
+      const data = await db.query(query, [join[0][0].no, essential, choice]);
+
+      if (data[0].affectedRows) {
+        return { success: true, msg: "약관동의가 정상적으로 등록되었습니다." };
+      }
+      return { success: false, msg: "약관동의가 등록되지 않았습니다." };
+    } catch (err) {
+      throw { msg: "약관동의 오류입니다, 서버 개발자에게 문의해주세요" };
+    }
+  }
+
   static async save(userInfo) {
     try {
+      const { id, password, mail, nickname, year, school } = userInfo;
       const query = `
       INSERT INTO users(id, password, mail, nickname, year_no, school_no) 
       VALUES(?, ?, ?, ?, ?, ?);`;
       const isSave = await db.query(query, [
-        userInfo.id,
-        userInfo.password,
-        userInfo.mail,
-        userInfo.nickname,
-        userInfo.year,
-        userInfo.school,
+        id,
+        password,
+        mail,
+        nickname,
+        year,
+        school,
       ]);
       if (isSave[0].affectedRows) {
         return { success: true, msg: "회원가입이 정상적으로 수행되었습니다." };
@@ -81,7 +107,6 @@ class UserStorage {
         return { success: false };
       }
     } catch (err) {
-      console.log(err);
       throw {
         msg: "회원가입 관련 서버에러입니다. 서버 개발자에게 문의하세요.",
       };
