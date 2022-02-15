@@ -18,7 +18,6 @@ const process = {
       }
     } catch (err) {
       {
-        console.log(err);
         return res.status(500).json(err);
       }
     }
@@ -38,19 +37,22 @@ const process = {
       return res.status(500).json(err);
     }
   },
-  // agreement: async (req, res) => {
-  //   try {
-  //     const user = new User(req.body);
-  //     const response = await user.agreement();
-  //     if (!response.success) {
-  //       logger.error(`POST /agreement 401 ${response.success} ${response.err}`);
-  //       return res.status(401).json(response);
-  //     } else {
-  //     }
-  //   } catch (err) {
-  //     throw res.status(500).json(err);
-  //   }
-  // },
+
+  agreement: async (req, res) => {
+    try {
+      const user = new User(req.body);
+      const response = await user.agreement();
+      if (!response.success) {
+        logger.error(`POST /agreement 401 ${response.success} ${response.msg}`);
+        return res.status(401).json(response);
+      } else {
+        logger.info(`POST /agreement 201 ${response.success} ${response.msg}`);
+        return res.status(201).json(response);
+      }
+    } catch (err) {
+      throw res.status(500).json(err);
+    }
+  },
 };
 
 module.exports = { process };

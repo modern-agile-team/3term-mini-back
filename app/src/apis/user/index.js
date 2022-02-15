@@ -6,6 +6,5 @@ const userCtrl = require("./user.Ctrl");
 
 router.post("/register", userCtrl.process.register);
 router.post("/login", userCtrl.process.login);
-
-// router.post("/agreement", userCtrl.process.agreement);
+router.post("/agreement", userCtrl.process.agreement);
 module.exports = router;

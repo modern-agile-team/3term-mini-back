@@ -29,6 +29,44 @@ class User {
       throw { success: false, msg: err.msg };
     }
   }
+
+  async agreement() {
+    const agreement = this.body;
+    const data = {
+      id: agreement.id,
+    };
+
+    const keys = [
+      "services",
+      "userinfo",
+      "rules",
+      "promotion",
+      "auth",
+      "adult",
+    ];
+
+    keys.forEach((key, idx) => {
+      data[key] = agreement[idx];
+    });
+
+    const dataBox = {
+      id: data.id,
+      essential: data.services,
+      choice: data.promotion,
+    };
+
+    try {
+      const checkBox = await UserStorage.getUserCheck(dataBox);
+      if (checkBox.success) {
+        return { success: true, msg: checkBox.msg };
+      } else {
+        return { success: false, msg: checkBox.msg };
+      }
+    } catch (err) {
+      throw { msg: err.msg };
+    }
+  }
+
   async register() {
     const client = this.body;
     //id,psword,이름,이 있는지 부터 확인
