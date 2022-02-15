@@ -8,7 +8,6 @@ const router = express.Router();
 //2팀
 router.get("/", boardCtrl.process.all);
 router.get(`/searchBoard`, boardCtrl.process.SearchBoard);
-
 router.delete(`/deleteBoard/:no`, boardCtrl.process.delete);
 
 // 1팀

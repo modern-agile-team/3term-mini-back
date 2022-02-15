@@ -42,13 +42,14 @@ class Board {
       return { success: false, msg: err };
     }
   }
+
   async deleteBoard(req) {
     const no = req.params.no;
     try {
       const response = await BoardStorage.deleteBoard(no);
       if (response.affectedRows === 1) {
         return { success: true, msg: "게시글이 성공적으로 삭제되었습니다." };
-      }
+      } else return { success: false, msg: "게시글이 삭제되지 않았습니다." };
     } catch (err) {
       if (err.msg.errno === 1451) {
         return {
@@ -56,7 +57,10 @@ class Board {
           msg: "신고당한 게시글은 삭제할 수가 없습니다.",
         };
       }
-      return { success: false, msg: err };
+      return {
+        success: false,
+        msg: "게시글 삭제 기능 에러입니다. 서버 개발자에게 문의하세요.",
+      };
     }
   }
   //1팀

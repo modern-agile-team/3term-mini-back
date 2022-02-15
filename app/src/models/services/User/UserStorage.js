@@ -19,22 +19,19 @@ class UserStorage {
       };
     }
   }
-  static async judgeDuplicateId(value) {
+
+  static async isDuplicatedId(id) {
+    // if (typeof id !== "string") throw new TypeError();
     const query = "SELECT id FROM users WHERE  id = ?;";
     try {
-      console.log(query);
-      const existId = await db.query(query, [value]);
-
-      if (existId[0].length) {
-        return { success: true };
-      } else {
-        return { success: false };
-      }
+      const existedId = await db.query(query, [id]);
+      return !!existedId[0].length;
       //existID가 메타 데이터이기 때문에 existId[0]을 return 해줌으로써 User에 넘겨 줄 데이터는 client.id에 해당하는 열을 객체로 보낸 형태가 됨
     } catch (err) {
       throw err;
     }
   }
+
   static async judgeDuplicateNickname(value) {
     try {
       const query = "SELECT nickname FROM users WHERE  nickname =?;";
@@ -65,24 +62,47 @@ class UserStorage {
     }
   }
 
+  static async getUserCheck(dataBox) {
+    try {
+      const { id, essential, choice } = dataBox;
+      const query2 = `SELECT * FROM users WHERE id = ?;`;
+      const join = await db.query(query2, [id]);
+      const query = `
+      INSERT INTO agreement (user_no, essential, choice)
+      VALUES(?, ?, ?);`;
+      const data = await db.query(query, [join[0][0].no, essential, choice]);
+
+      if (data[0].affectedRows) {
+        return { success: true, msg: "약관동의가 정상적으로 등록되었습니다." };
+      } else {
+        return { success: false, msg: "약관동의가 등록되지 않았습니다." };
+      }
+    } catch (err) {
+      throw { msg: "약관동의 오류입니다, 서버 개발자에게 문의해주세요" };
+    }
+  }
+
   static async save(userInfo) {
     try {
+      const { id, password, mail, nickname, year, school } = userInfo;
       const query = `
-      INSERT INTO users(id, password, mail, nickname, name) 
-      VALUES(?, ?, ?, ?, ?);`;
+      INSERT INTO users(id, password, mail, nickname, year_no, school_no) 
+      VALUES(?, ?, ?, ?, ?, ?);`;
       const isSave = await db.query(query, [
-        userInfo.id,
-        userInfo.password,
-        userInfo.mail,
-        userInfo.nickname,
-        userInfo.name,
+        id,
+        password,
+        mail,
+        nickname,
+        year,
+        school,
       ]);
       if (isSave[0].affectedRows) {
-        return { success: true };
+        return { success: true, msg: "회원가입이 정상적으로 수행되었습니다." };
       } else {
         return { success: false };
       }
     } catch (err) {
+      console.log(err);
       throw {
         msg: "회원가입 관련 서버에러입니다. 서버 개발자에게 문의하세요.",
       };
