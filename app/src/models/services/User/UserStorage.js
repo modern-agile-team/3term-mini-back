@@ -6,7 +6,7 @@ const db = require("../../../config/mysql");
 class UserStorage {
   static async getUserInfo(id) {
     try {
-      const query = "SELECT id,password FROM users WHERE id = ?;";
+      const query = "SELECT id,password,name FROM users WHERE id = ?;";
       const existId = await db.query(query, [id]);
       if (existId[0].length) {
         return { success: true, info: existId[0][0] };
@@ -81,7 +81,6 @@ class UserStorage {
         return { success: false };
       }
     } catch (err) {
-      console.log(err);
       throw {
         msg: "회원가입 관련 서버에러입니다. 서버 개발자에게 문의하세요.",
       };
