@@ -62,6 +62,26 @@ class UserStorage {
     }
   }
 
+  static async getUserCheck(dataBox) {
+    try {
+      const { id, essential, choice } = dataBox;
+      const query2 = `SELECT * FROM users WHERE id = ?;`;
+      const join = await db.query(query2, [id]);
+      const query = `
+      INSERT INTO agreement (user_no, essential, choice)
+      VALUES(?, ?, ?);`;
+      const data = await db.query(query, [join[0][0].no, essential, choice]);
+
+      if (data[0].affectedRows) {
+        return { success: true, msg: "약관동의가 정상적으로 등록되었습니다." };
+      } else {
+        return { success: false, msg: "약관동의가 등록되지 않았습니다." };
+      }
+    } catch (err) {
+      throw { msg: "약관동의 오류입니다, 서버 개발자에게 문의해주세요" };
+    }
+  }
+
   static async save(userInfo) {
     try {
       const query = `
