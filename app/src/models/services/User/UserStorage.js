@@ -84,16 +84,17 @@ class UserStorage {
 
   static async save(userInfo) {
     try {
+      const { id, password, mail, nickname, year, school } = userInfo;
       const query = `
       INSERT INTO users(id, password, mail, nickname, year_no, school_no) 
       VALUES(?, ?, ?, ?, ?, ?);`;
       const isSave = await db.query(query, [
-        userInfo.id,
-        userInfo.password,
-        userInfo.mail,
-        userInfo.nickname,
-        userInfo.year,
-        userInfo.school,
+        id,
+        password,
+        mail,
+        nickname,
+        year,
+        school,
       ]);
       if (isSave[0].affectedRows) {
         return { success: true, msg: "회원가입이 정상적으로 수행되었습니다." };
