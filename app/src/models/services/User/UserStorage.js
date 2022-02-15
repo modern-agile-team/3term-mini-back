@@ -65,6 +65,12 @@ class UserStorage {
   static async getUserCheck(dataBox) {
     try {
       const { id, essential, choice } = dataBox;
+      if (essential === false || essential === undefined) {
+        return {
+          success: false,
+          msg: "약관동의의 필수적인 요소가 등록되지 않았습니다.",
+        };
+      }
       const query2 = `SELECT * FROM users WHERE id = ?;`;
       const join = await db.query(query2, [id]);
       const query = `
@@ -74,8 +80,6 @@ class UserStorage {
 
       if (data[0].affectedRows) {
         return { success: true, msg: "약관동의가 정상적으로 등록되었습니다." };
-      } else {
-        return { success: false, msg: "약관동의가 등록되지 않았습니다." };
       }
     } catch (err) {
       throw { msg: "약관동의 오류입니다, 서버 개발자에게 문의해주세요" };

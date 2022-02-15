@@ -31,7 +31,6 @@ class User {
     };
 
     const keys = [
-      "all",
       "services",
       "userinfo",
       "rules",
