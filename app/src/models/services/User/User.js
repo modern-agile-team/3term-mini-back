@@ -62,7 +62,7 @@ class User {
 
     try {
       const checkBox = await UserStorage.getUserCheck(dataBox);
-      console.log(checkBox);
+
       if (checkBox.success) {
         return { success: true, msg: checkBox.msg };
       } else {
