@@ -52,7 +52,7 @@ class BoardStorage {
   static async orderBoard(order) {
     try {
       const query = `
-      select boards.no, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS inDate, DATE_FORMAT(boards.modify_date,'%m/%d %H:%i') AS modifyDate, (SELECT count(*) FROM comments where comments.board_no = boards.no) AS comments_length, boards.hit, users.nickname
+      select users.no AS userNo, boards.no AS boardNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS inDate, DATE_FORMAT(boards.modify_date,'%m/%d %H:%i') AS modifyDate, (SELECT count(*) FROM comments where comments.board_no = boards.no) AS comments_length, boards.hit, users.nickname
       from boards
       left join users
       on boards.user_no = users.no
