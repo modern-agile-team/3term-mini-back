@@ -9,6 +9,7 @@ const process = {
     try {
       const user = new User(req.body);
       const response = await user.login();
+      console.log(response);
       if (!response.success) {
         logger.error(`POST /login 400  ${response.success} ${response.msg}`);
         return res.status(400).json(response);
