@@ -8,7 +8,7 @@ const loginCheck = require("../../middlewares/login-auth");
 const router = express.Router();
 
 //2팀
-router.get("/", identityCheck.identityCheck, boardCtrl.process.all);
+router.get("/", boardCtrl.process.all);
 router.get(`/searchBoard`, boardCtrl.process.SearchBoard);
 router.delete(`/deleteBoard/:no`, boardCtrl.process.delete);
 
