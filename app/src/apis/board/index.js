@@ -2,6 +2,8 @@
 
 const express = require("express");
 const boardCtrl = require("./board.Ctrl");
+const identityCheck = require("../../middlewares/identify-auth");
+const loginCheck = require("../../middlewares/login-auth");
 
 const router = express.Router();
 

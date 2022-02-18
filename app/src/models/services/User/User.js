@@ -1,6 +1,8 @@
 "use strict";
 
 const UserStorage = require("./UserStorage");
+const auth = require("../../services/Auth/Auth");
+
 class User {
   constructor(body) {
     this.body = body;
@@ -11,9 +13,18 @@ class User {
       // const { id, password } = await UserStorage.getUserInfo(client.id);
       const userInfo = await UserStorage.getUserInfo(client.id);
       const trueUserInfo = userInfo.info;
+      // const jwt = await auth.createJWT(userInfo.info);
+      //auth.createJWT는 Promise타입을 반환하므로 await을 걸어주어야 한다.
+      console.log(userInfo.info);
       if (trueUserInfo) {
         if (trueUserInfo.password === client.password) {
-          return { success: true, msg: "로그인 성공" };
+          // return { success: true, msg: "로그인 성공", jwt };
+          return {
+            success: true,
+            msg: "로그인 성공",
+            userNo: userInfo.info.no,
+          };
+          // 이제 로그인이 성공했으므로 프론트에 jwt 토큰을 보내준 것임
         }
         return { success: false, msg: "비밀번호가 틀렸습니다" };
       }
@@ -79,7 +90,6 @@ class User {
         return false;
       })
       .join(",");
-
     if (nullKeys)
       return {
         success: false,

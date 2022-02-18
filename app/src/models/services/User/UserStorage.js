@@ -6,7 +6,7 @@ const db = require("../../../config/mysql");
 class UserStorage {
   static async getUserInfo(id) {
     try {
-      const query = "SELECT id,password FROM users WHERE id = ?;";
+      const query = "SELECT id,password,name,no FROM users WHERE id = ?;";
       const existId = await db.query(query, [id]);
       if (existId[0].length) {
         return { success: true, info: existId[0][0] };
@@ -80,6 +80,7 @@ class UserStorage {
       if (data[0].affectedRows) {
         return { success: true, msg: "약관동의가 정상적으로 등록되었습니다." };
       }
+      return { success: false, msg: "약관동의가 등록되지 않았습니다." };
     } catch (err) {
       throw { msg: "약관동의 오류입니다, 서버 개발자에게 문의해주세요" };
     }
@@ -105,7 +106,6 @@ class UserStorage {
         return { success: false };
       }
     } catch (err) {
-      console.log(err);
       throw {
         msg: "회원가입 관련 서버에러입니다. 서버 개발자에게 문의하세요.",
       };

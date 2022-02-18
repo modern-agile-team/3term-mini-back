@@ -56,7 +56,7 @@ class report {
     const reportDetail = this.body;
     const reportConfirm = Blank.descConfirm(reportDetail.description);
     // 유저 신고창에서 체크박스 또는 신고 사유를 입력하지 않을 경우 발생하는 에러
-    if (!reportDetail.reportId.length || !reportConfirm.desc.length) {
+    if (!reportDetail.reportId.length || !reportConfirm.success) {
       return {
         success: false,
         msg: `신고 내용 입력 또는 체크박스를 선택해 주세요.`,
