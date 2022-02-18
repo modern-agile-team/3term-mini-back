@@ -129,7 +129,7 @@ class BoardStorage {
     try {
       const { boardNo } = boardNum;
       const query = `
-      SELECT users.no AS writerNo, boards.no AS boardNo, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate, (SELECT count(*) FROM comments where comments.board_no = boards.no) as comments_length, hit, users.nickname
+      SELECT boards.no AS boardNo, boards.user_no AS boardWriteUserNo, boards.title, boards.description, DATE_FORMAT(boards.in_date,'%m/%d %H:%i') AS boardInDate, (SELECT count(*) FROM comments where comments.board_no = boards.no) as comments_length, hit, users.nickname
 	    FROM boards
       LEFT JOIN users
       ON boards.user_no = users.no
@@ -171,13 +171,12 @@ class BoardStorage {
 
   static async update(updateInfo) {
     try {
-      const { boardNo, userNo, title, description } = updateInfo;
-      const query = `UPDATE boards SET title = ?, description = ?  WHERE no = ? AND user_no = ?;`;
+      const { boardNo, title, description } = updateInfo;
+      const query = `UPDATE boards SET title = ?, description = ?  WHERE no = ?;`;
       const updateResult = await mysql.query(query, [
         title,
         description,
         boardNo,
-        userNo,
       ]);
 
       if (updateResult[0].affectedRows) {
