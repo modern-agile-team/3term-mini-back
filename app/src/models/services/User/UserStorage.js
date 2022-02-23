@@ -6,7 +6,7 @@ const db = require("../../../config/mysql");
 class UserStorage {
   static async getUserInfo(id) {
     try {
-      const query = "SELEC id,password,name,no FROM users WHERE id = ?;";
+      const query = "SELECT id,password,name,no FROM users WHERE id = ?;";
       const existId = await db.query(query, [id]);
       if (existId[0].length) {
         return { success: true, info: existId[0][0] };
