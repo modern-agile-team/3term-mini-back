@@ -166,8 +166,8 @@ const process = {
       const response = await board.update(req);
 
       if (response.success) {
-        logger.info(`PUT /connect 200 ${response.success} ${response.msg}`);
-        return res.status(200).json(response);
+        logger.info(`PUT /connect 204 ${response.success} ${response.msg}`);
+        return res.status(204).json(response);
       } else {
         logger.error(`PUT /connect 400  ${response.success} ${response.msg}`);
         return res.status(400).json(response);
