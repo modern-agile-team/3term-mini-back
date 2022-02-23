@@ -6,6 +6,8 @@ const morgan = require("morgan");
 const cors = require("cors");
 const logger = require("./src/config/logger");
 const accessLogStream = require("./src/config/log");
+const base64 = require("base-64");
+//base-64라는 모듈 설치
 
 dotenv.config();
 const app = express();
