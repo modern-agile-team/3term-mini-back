@@ -9,7 +9,18 @@ const process = {
     try {
       const user = new User(req.body);
       const response = await user.login();
-      console.log(response);
+
+      // console.log(response);
+      // console.log("----------");
+      // let base64Payload = response.jwt.split(".")[1];
+      // console.log(base64Payload);
+      // console.log("----------");
+      // let payload = Buffer.from(base64Payload, "base64");
+      // console.log(payload);
+      // console.log("----------");
+      // let result = JSON.parse(payload.toString());
+      // console.log(result);
+
       if (!response.success) {
         logger.error(`POST /login 400  ${response.success} ${response.msg}`);
         return res.status(400).json(response);

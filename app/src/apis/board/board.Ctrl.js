@@ -50,7 +50,7 @@ const process = {
         return res.status(403).json(response);
       } else {
         logger.info(
-          `DELETE /deleteBoard 200  ${response.success} ${response.msg}`
+          `DELETE /deleteBoard 204  ${response.success} ${response.msg}`
         );
         return res.status(200).json(response);
       }

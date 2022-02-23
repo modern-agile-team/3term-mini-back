@@ -15,7 +15,6 @@ class User {
       const trueUserInfo = userInfo.info;
       // const jwt = await auth.createJWT(userInfo.info);
       //auth.createJWT는 Promise타입을 반환하므로 await을 걸어주어야 한다.
-      console.log(userInfo.info);
       if (trueUserInfo) {
         if (trueUserInfo.password === client.password) {
           // return { success: true, msg: "로그인 성공", jwt };
@@ -23,6 +22,7 @@ class User {
             success: true,
             msg: "로그인 성공",
             userNo: userInfo.info.no,
+            // jwt,
           };
           // 이제 로그인이 성공했으므로 프론트에 jwt 토큰을 보내준 것임
         }
